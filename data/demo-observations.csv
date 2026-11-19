@@ -1,0 +1,71 @@
+Child,Age,Country,City,Date,Elf,Category,Observation
+Aino,8,Finland,Espoo,2026-02-11,Pipari,Chores,Cleared snow from the front steps without being asked
+Aino,8,Finland,Espoo,2026-03-14,Lumi,Mischief,Snowball through the neighbour's window
+Aino,8,Finland,Espoo,2026-03-14,Lumi,Honesty,Knocked on the neighbour's door and apologised the same day
+Aino,8,Finland,Espoo,2026-06-02,Tonttu,Kindness,Shared her ice cream with a crying toddler at the beach
+Aino,8,Finland,Espoo,2026-09-20,Pipari,Helpfulness,Read bedtime stories to her little brother all week
+Aino,8,Finland,Espoo,2026-10-08,Pipari,Kindness,Helped a classmate carry her bags every morning
+Aino,8,Finland,Espoo,2026-11-05,Tonttu,Kindness,Kept helping the same classmate with her bags
+Mikko,10,Finland,Tampere,2026-01-22,Kuusi,Helpfulness,Shovelled the elderly neighbour's driveway
+Mikko,10,Finland,Tampere,2026-04-03,Jingle,Unkindness,Called a teammate names after a lost hockey game
+Mikko,10,Finland,Tampere,2026-05-17,Kuusi,Kindness,Gave his spare hockey stick to a new kid
+Mikko,10,Finland,Tampere,2026-08-29,Jingle,Dishonesty,Said the dog ate his homework (there is no dog)
+Mikko,10,Finland,Tampere,2026-10-12,Kuusi,Chores,Took out the recycling every week in October
+Mikko,10,Finland,Tampere,2026-11-09,Jingle,Mischief,Hid his sister's skates before practice
+Elias,6,Finland,Oulu,2026-01-15,Lumi,Kindness,Made a get-well card for his grandma
+Elias,6,Finland,Oulu,2026-03-02,Tonttu,Helpfulness,Helped feed the ducks at daycare every morning
+Elias,6,Finland,Oulu,2026-05-21,Lumi,Honesty,Returned a lost mitten to the lost-and-found
+Elias,6,Finland,Oulu,2026-08-11,Tonttu,Kindness,Invited the shy new kid to play tag
+Elias,6,Finland,Oulu,2026-10-30,Lumi,Chores,Tidied his toys without a single reminder
+Elias,6,Finland,Oulu,2026-11-12,Tonttu,Kindness,Gave his favourite crayon to a friend who lost theirs
+Ville,9,Finland,Helsinki,2026-02-28,Pipari,Helpfulness,Helped his dad fix a bike tyre
+Ville,9,Finland,Helsinki,2026-06-15,Kuusi,Kindness,Picked up litter on the beach with his scout group
+Ville,9,Finland,Helsinki,2026-09-03,Pipari,Mischief,Rang doorbells and ran away (once)
+Ville,9,Finland,Helsinki,2026-10-24,Kuusi,Kindness,Walked a younger kid home after dark
+Ville,9,Finland,Helsinki,2026-11-14,Pipari,Honesty,Told the teacher she gave him too many points
+Saga,9,Sweden,Malmö,2026-01-09,Nisse,Kindness,Knitted a scarf for the school janitor
+Saga,9,Sweden,Malmö,2026-04-12,Holly,Helpfulness,Organised a toy swap at school
+Saga,9,Sweden,Malmö,2026-06-30,Nisse,Kindness,Stayed with a friend who fell off her bike until help came
+Saga,9,Sweden,Malmö,2026-09-14,Holly,Honesty,Admitted she broke the classroom globe
+Saga,9,Sweden,Malmö,2026-11-02,Nisse,Kindness,Started a letter-writing club for lonely seniors
+Saga,9,Sweden,Malmö,2026-11-16,Holly,Kindness,Wrote twelve letters to a care home
+Lars,11,Norway,Bergen,2026-02-05,Nisse,Unkindness,Pushed a younger kid off the sledding hill
+Lars,11,Norway,Bergen,2026-03-19,Holly,Unkindness,Laughed at a classmate's drawing until she cried
+Lars,11,Norway,Bergen,2026-05-08,Nisse,Dishonesty,Blamed his brother for the broken lamp
+Lars,11,Norway,Bergen,2026-07-22,Holly,Mischief,Put salt in the sugar bowl at a family party
+Lars,11,Norway,Bergen,2026-09-10,Nisse,Unkindness,Kept a classmate out of the football game on purpose
+Lars,11,Norway,Bergen,2026-11-04,Holly,Kindness,Helped his grandpa stack firewood
+Yuki,7,Japan,Sapporo,2026-01-30,Sparkle,Kindness,Saved her pocket money for a shelter cat
+Yuki,7,Japan,Sapporo,2026-04-18,Jingle,Helpfulness,Helped her grandmother plant the garden
+Yuki,7,Japan,Sapporo,2026-07-07,Sparkle,Kindness,Wrote a Tanabata wish for her friend's sick dog
+Yuki,7,Japan,Sapporo,2026-10-02,Jingle,Chores,Folded the whole family's laundry
+Yuki,7,Japan,Sapporo,2026-11-11,Sparkle,Kindness,Taught a new classmate how to make origami cranes
+Kenji,12,Japan,Osaka,2026-06-12,Sparkle,Mischief,Drew a moustache on a poster at the train station
+Kenji,12,Japan,Osaka,2026-10-19,Jingle,Kindness,Gave up his seat on the train to an elderly man
+Amara,9,Kenya,Nairobi,2026-02-14,Holly,Kindness,Shared her lunch with a classmate who forgot his
+Amara,9,Kenya,Nairobi,2026-05-03,Sparkle,Helpfulness,Tutored her cousin in maths every weekend
+Amara,9,Kenya,Nairobi,2026-07-19,Holly,Kindness,Planted trees at school with her class
+Amara,9,Kenya,Nairobi,2026-09-25,Sparkle,Honesty,Returned extra change to the shopkeeper
+Amara,9,Kenya,Nairobi,2026-11-08,Holly,Kindness,Organised a book drive for the library
+Lucas,8,Brazil,Recife,2026-01-20,Jingle,Mischief,Hid in the wardrobe during a game and scared grandma
+Lucas,8,Brazil,Recife,2026-03-28,Sparkle,Kindness,Rescued a stray puppy and found it a home
+Lucas,8,Brazil,Recife,2026-06-24,Jingle,Chores,Washed the family car
+Lucas,8,Brazil,Recife,2026-09-06,Sparkle,Mischief,Drew on the bathroom wall with toothpaste
+Lucas,8,Brazil,Recife,2026-10-27,Jingle,Helpfulness,Helped his little sister learn to swim
+Lucas,8,Brazil,Recife,2026-11-13,Sparkle,Kindness,Gave his football to a kid who didn't have one
+Emma,10,USA,Denver,2026-01-12,Kuusi,Unkindness,Excluded a new girl from her birthday party
+Emma,10,USA,Denver,2026-02-26,Lumi,Dishonesty,Copied a friend's homework and claimed it as hers
+Emma,10,USA,Denver,2026-04-09,Kuusi,Unkindness,Spread a rumour at school
+Emma,10,USA,Denver,2026-07-15,Lumi,Honesty,Apologised to the new girl and invited her over
+Emma,10,USA,Denver,2026-09-18,Kuusi,Kindness,Stood up for a kid being teased on the bus
+Emma,10,USA,Denver,2026-10-21,Lumi,Kindness,Started an anti-bullying poster project
+Emma,10,USA,Denver,2026-11-10,Kuusi,Helpfulness,Volunteered at the animal shelter every Saturday
+Noah,7,Canada,Halifax,2026-02-02,Holly,Dishonesty,Said he brushed his teeth (toothbrush was dry)
+Noah,7,Canada,Halifax,2026-04-25,Nisse,Mischief,Fed his broccoli to the dog under the table
+Noah,7,Canada,Halifax,2026-06-19,Holly,Dishonesty,Ate the cookies and blamed the cat
+Noah,7,Canada,Halifax,2026-09-12,Nisse,Unkindness,Snatched a toy from his cousin
+Noah,7,Canada,Halifax,2026-11-03,Holly,Mischief,Unrolled all the toilet paper for a mummy costume
+Lea,6,Germany,Freiburg,2026-03-08,Pipari,Kindness,Drew a picture for the lonely neighbour
+Lea,6,Germany,Freiburg,2026-05-30,Lumi,Mischief,Painted the cat (with water, the cat disagreed)
+Lea,6,Germany,Freiburg,2026-08-16,Pipari,Helpfulness,Helped set the table every evening
+Lea,6,Germany,Freiburg,2026-11-07,Lumi,Kindness,Comforted her friend on the first school day

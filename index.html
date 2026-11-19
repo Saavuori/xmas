@@ -1,347 +1,488 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ELFRED – Santa's AI Head Elf</title>
-<meta name="description" content="ELFRED: a read-only AI Head Elf that turns elf observations into fair, explained nice-or-naughty recommendations.">
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ELFRED · Santa's AI Head Elf</title>
+<meta name="theme-color" content="#0E2A23">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎄</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap">
-<style>:root{--pine:#0E2A23;--pine2:#18402F;--cream:#F7F0E3;--cream2:#EDE2CC;--paper:#FFFBF3;--red:#B8283A;--gold:#E9B44C;--leaf:#8FBF8A;--deep:#1F5C45;--ink:#1B1F1D;--muted:#55625B;--line:#D9CBB0;}
-section{padding:128px;background:var(--cream);color:var(--ink);font-family:'Inter',sans-serif;font-size:28px;line-height:1.4;display:flex;flex-direction:column;}
-section.dark{background:var(--pine);color:var(--cream);}
-section.warm{background:var(--cream2);}
-h1,h2,h3{font-family:'Fraunces',serif;margin:0;font-weight:600;letter-spacing:-0.01em;}
-h1{font-size:160px;line-height:1;}
-h2{font-size:72px;line-height:1.1;margin:0 0 48px 0;}
-h3{font-size:40px;line-height:1.15;margin:0 0 12px 0;}
-p{margin:0;font-size:28px;}
-.kicker{font-size:24px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:700;margin:0 0 20px 0;}
-.dark .kicker{color:var(--gold);}
-.muted{color:var(--muted);}
-.dark .muted{color:#B9C7BF;}
-.hl{color:var(--gold);}
-
-@keyframes rise{from{opacity:0;transform:translateY(28px);}}
-@keyframes fadein{from{opacity:0;}}
-.rise{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;}
-.fade{animation:fadein .6s ease-out both;}
-.d1{animation-delay:.08s;}.d2{animation-delay:.16s;}.d3{animation-delay:.24s;}.d4{animation-delay:.32s;}.d5{animation-delay:.40s;}.d6{animation-delay:.48s;}
-
-/* cover + closing */
-.cover{justify-content:flex-end;}
-.cover-sub{font-family:'Fraunces',serif;font-size:72px;line-height:1.1;color:var(--gold);margin-top:12px;}
-.cover-tag{font-size:40px;line-height:1.3;width:1040px;margin-top:48px;}
-.hat{position:absolute;right:150px;top:120px;width:540px;height:680px;}
-.hat-small{position:absolute;right:170px;top:200px;width:440px;height:550px;}
-.next{font-size:24px;width:1040px;margin-top:40px;}
-
-/* problem */
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:24px;}
-.item{border-top:4px solid var(--ink);padding-top:28px;}
-.num{font-family:'Fraunces',serif;font-size:72px;color:var(--red);line-height:1;margin-bottom:20px;}
-.closer{margin-top:auto;font-family:'Fraunces',serif;font-size:40px;line-height:1.25;color:var(--pine);}
-
-/* definition */
-.statement{font-family:'Fraunces',serif;font-size:72px;line-height:1.15;width:1600px;}
-.pills{display:flex;gap:24px;margin-top:auto;}
-.pill{border:2px solid var(--gold);border-radius:999px;padding:14px 36px;font-size:28px;font-weight:600;color:var(--gold);}
-
-/* duties */
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
-.card{background:var(--paper);border-radius:20px;padding:36px;border:2px solid var(--line);}
-.card h3{color:var(--pine);}
-.card.r{border-top:10px solid var(--red);}
-.card.g{border-top:10px solid var(--gold);}
-.card.p{border-top:10px solid var(--deep);}
-
-/* architecture */
-.flow{display:flex;align-items:stretch;margin-top:8px;}
-.node{flex:1;background:var(--paper);border-radius:24px;padding:40px;border:3px solid var(--pine);}
-.node.agent{background:var(--pine);color:var(--cream);}
-.node.agent h3{color:var(--gold);}
-.node.data{border-color:var(--red);}
-.link{width:210px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;}
-.lbl{font-size:24px;color:var(--muted);text-align:center;line-height:1.2;}
-.badge{display:inline-block;background:var(--red);color:var(--cream);font-size:24px;font-weight:700;letter-spacing:.08em;padding:6px 18px;border-radius:8px;margin-top:20px;}
-.facts{display:flex;gap:32px;margin-top:auto;}
-.fact{flex:1;border-left:6px solid var(--gold);padding:6px 0 6px 24px;font-size:24px;font-weight:600;}
-
-/* meter */
-.split{display:flex;gap:96px;flex:1;}
-.rules{flex:1;display:flex;flex-direction:column;gap:26px;}
-.rule{display:flex;gap:24px;align-items:baseline;}
-.rule .n{font-family:'Fraunces',serif;font-size:40px;color:var(--red);width:48px;flex:none;line-height:1;}
-.meter{width:540px;flex:none;display:flex;flex-direction:column;border-radius:24px;overflow:hidden;}
-.band{flex:1;padding:20px 36px;display:flex;flex-direction:column;justify-content:center;}
-.band h3{margin:0 0 4px 0;}
-.band .sub{font-size:24px;}
-.b1{background:var(--deep);color:var(--cream);}
-.b2{background:var(--leaf);color:var(--ink);}
-.b3{background:var(--gold);color:var(--ink);}
-.b4{background:var(--red);color:var(--cream);}
-
-/* chat */
-.chat{display:flex;flex-direction:column;gap:28px;}
-.bubble{border-radius:28px;padding:28px 40px;}
-.santa{align-self:flex-end;background:var(--red);color:var(--cream);width:980px;border-bottom-right-radius:6px;}
-.elf{align-self:flex-start;background:var(--paper);width:1340px;border:2px solid var(--line);border-bottom-left-radius:6px;}
-.who{font-size:24px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.elf .who{color:var(--deep);}
-.verdict{font-weight:700;color:var(--deep);margin-bottom:8px;}
-.elf ul{margin:4px 0 12px 0;padding-left:36px;}
-.elf li{font-size:28px;margin:4px 0;}
-.signoff{font-style:italic;}
-.demo-note{position:absolute;right:128px;top:150px;width:520px;text-align:right;font-size:24px;color:var(--muted);}
-
-/* personality */
-.two{display:flex;gap:80px;flex:1;}
-.traits{flex:1;display:flex;flex-direction:column;gap:40px;}
-.trait h3{color:var(--gold);}
-.quote-card{width:640px;flex:none;background:var(--pine2);border-radius:28px;padding:56px;display:flex;flex-direction:column;justify-content:center;border:2px solid #2E5A47;}
-.quote{font-family:'Fraunces',serif;font-size:40px;line-height:1.3;font-style:italic;}
-
-/* guardrails */
-table.gr{width:100%;border-collapse:collapse;}
-.gr th{font-family:'Fraunces',serif;font-size:40px;font-weight:600;text-align:left;padding:18px 28px;}
-.gr th.yes{background:var(--deep);color:var(--cream);}
-.gr th.no{background:var(--red);color:var(--cream);}
-.gr td{font-size:28px;padding:18px 28px;border-bottom:2px solid var(--line);width:50%;background:var(--paper);}
-
-/* prompt */
-.prompt{background:var(--paper);border:2px solid var(--line);border-left:12px solid var(--gold);border-radius:16px;padding:36px 48px;}
-.pl{font-family:'JetBrains Mono',monospace;font-size:24px;line-height:1.45;margin:0 0 8px 0;}
-.pl b{color:var(--red);}
-
-/* demo */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
-.step{background:var(--paper);border-radius:20px;padding:36px;display:flex;gap:28px;border:2px solid var(--line);}
-.step .n{font-family:'Fraunces',serif;font-size:72px;color:var(--red);line-height:1;flex:none;width:56px;}
-.ask{font-family:'Fraunces',serif;font-size:40px;line-height:1.2;margin-bottom:12px;color:var(--pine);}
-
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Inter:wght@400..800&display=swap">
+<style>
+:root{--pine:#0E2A23;--pine2:#18402F;--cream:#F7F0E3;--cream2:#EDE2CC;--paper:#FFFBF3;--red:#B8283A;--gold:#E9B44C;--leaf:#8FBF8A;--deep:#1F5C45;--ink:#1B1F1D;--muted:#5D6A63;--line:#DCCFB6;}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#081A15;overflow:hidden;font-family:'Inter',sans-serif;}
-#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
-#stage{position:relative;width:1920px;height:1080px;flex:none;transform-origin:center center;box-shadow:0 30px 80px rgba(0,0,0,.5);overflow:hidden;}
-#stage>section{position:absolute;inset:0;width:1920px;height:1080px;display:none;}
-#stage>section.active{display:flex;}
-#stage>section.leaving{display:flex;animation:out .35s ease both;z-index:0}
-@keyframes out{to{opacity:0}}
-aside.notes{display:none}
-x-shape{display:block}
-x-shape[kind=arrow-right]{clip-path:polygon(0 32%,72% 32%,72% 0,100% 50%,72% 100%,72% 68%,0 68%)}
-x-shape[kind=arrow-left]{clip-path:polygon(100% 32%,28% 32%,28% 0,0 50%,28% 100%,28% 68%,100% 68%)}
-.snow{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.snow i{position:absolute;top:-20px;border-radius:50%;background:#F7F0E3;opacity:.55;animation:fall linear infinite}
-@keyframes fall{to{transform:translateY(1120px)}}
-#bar{position:fixed;left:0;bottom:0;height:5px;background:#E9B44C;transition:width .3s;z-index:5}
-#ui{position:fixed;right:18px;bottom:16px;background:rgba(14,42,35,.55);padding:6px 8px;border-radius:12px;display:flex;gap:8px;align-items:center;z-index:6;color:#F7F0E3;font-size:14px}
-#ui button{background:rgba(14,42,35,.8);color:#F7F0E3;border:1px solid rgba(247,240,227,.25);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
-#ui button:hover{background:rgba(247,240,227,.25)}
-#notes{position:fixed;left:16px;right:16px;bottom:64px;max-height:40vh;overflow:auto;background:rgba(8,26,21,.94);color:#F7F0E3;border:1px solid #2E5A47;border-radius:12px;padding:16px 20px;font-size:15px;line-height:1.5;white-space:pre-wrap;display:none;z-index:6}
-#notes.show{display:block}
-#hint{position:fixed;left:18px;bottom:20px;color:rgba(85,98,91,.8);mix-blend-mode:difference;font-size:13px;z-index:6}
-@media print{html,body{overflow:visible;background:none}#viewport{position:static;display:block}#stage{transform:none!important;box-shadow:none;width:auto;height:auto;overflow:visible}#stage>section{position:relative;display:flex!important;page-break-after:always}#ui,#bar,#hint,#notes{display:none}@page{size:1920px 1080px;margin:0}*{animation:none!important}}
-</style></head><body>
-<div id="viewport"><div id="stage">
-<section id="cover" class="dark cover" data-transition="fade">
-<svg class="hat rise d2" viewBox="0 0 400 500" aria-label="Red elf hat with a gold circuit pattern"><path d="M70 410 C130 270 210 140 340 70 C315 170 312 300 345 410 Z" fill="#B8283A"/><path d="M150 360 H205 V300 H250 V240" stroke="#E9B44C" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M232 360 V330 H290" stroke="#E9B44C" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="250" cy="232" r="11" fill="#E9B44C"/><circle cx="298" cy="330" r="11" fill="#E9B44C"/><circle cx="142" cy="360" r="11" fill="#E9B44C"/><rect x="40" y="400" width="330" height="72" rx="36" fill="#F7F0E3"/><circle cx="342" cy="66" r="44" fill="#F7F0E3"/><path d="M60 120 l8 20 20 8 -20 8 -8 20 -8 -20 -20 -8 20 -8z" fill="#E9B44C"/><path d="M372 230 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z" fill="#E9B44C"/></svg>
-<p class="kicker rise">North Pole AI Hour · 2026</p>
-<h1 class="rise d1">ELFRED</h1>
-<p class="cover-sub rise d2">Santa's new AI Head Elf</p>
-<p class="cover-tag rise d3">Reads the list. Weighs the evidence. Never touches the data. <b class="hl">Santa decides.</b></p>
-<aside class="notes">Ho ho ho. Meet ELFRED, short for Evidence-Led Fair Recommendation Elf Daemon. One line pitch: it does the Head Elf&#x27;s thinking, never the Head Elf&#x27;s editing.</aside>
-</section>
-<section id="problem" data-transition="fade">
-<p class="kicker">The emergency</p>
-<h2>The Head Elf is gone. Christmas isn't.</h2>
-<div class="trio">
-<div class="item rise d1"><p class="num">01</p><h3>Make sense of the data</h3><p class="muted">A year of elf observations sits in a SharePoint list. Data alone doesn't decide anything.</p></div>
-<div class="item rise d2"><p class="num">02</p><h3>Help decide nice or naughty</h3><p class="muted">Weigh the evidence fairly, child by child, and give Santa a clear recommendation.</p></div>
-<div class="item rise d3"><p class="num">03</p><h3>Keep Santa going</h3><p class="muted">The Head Elf was also Santa's trusted companion in the most stressful weeks of the year.</p></div>
-</div>
-<p class="closer rise d4">ELFRED takes over all three duties — without ever changing a single record.</p>
-<aside class="notes">Santa&#x27;s letter named three things the Head Elf did: interpret the information, help with the hard decisions, and support Santa mentally. Our agent covers all three.</aside>
-</section>
-<section id="definition" class="dark" data-transition="fade">
-<p class="kicker">Our definition, before any building</p>
-<p class="statement rise">ELFRED is a <span class="hl">read-only advisor</span> that turns the elves' observations into <span class="hl">fair, explained</span> nice-or-naughty recommendations — and keeps Santa company while he decides.</p>
-<div class="pills">
-<p class="pill rise d2">Read-only</p>
-<p class="pill rise d3">Evidence first</p>
-<p class="pill rise d4">Santa decides</p>
-<p class="pill rise d5">Kind always</p>
-</div>
-<aside class="notes">The clever elves said a good definition beats rushing into building, so we spent the first 15 minutes on this one sentence and four principles. Everything that follows comes from them.</aside>
-</section>
-<section id="duties" data-transition="fade">
-<p class="kicker">Responsibilities</p>
-<h2>What ELFRED does</h2>
-<div class="grid3">
-<div class="card r rise d1"><h3>Assess a child</h3><p>Weighs every observation and recommends a verdict band with a confidence level.</p></div>
-<div class="card g rise d2"><h3>Show the evidence</h3><p>Every answer cites the list entries behind it: date, elf and what happened.</p></div>
-<div class="card p rise d3"><h3>Flag tricky cases</h3><p>Spots thin data, conflicting reports and borderline kids, and routes them to Santa.</p></div>
-<div class="card p rise d4"><h3>Spot redemption</h3><p>Notices children who improved through the year. Recent behaviour weighs more.</p></div>
-<div class="card r rise d5"><h3>Summarise regions</h3><p>"How is Finland doing?" Counts per band, trends and the cases needing review.</p></div>
-<div class="card g rise d6"><h3>Support Santa</h3><p>A calm companion for crunch weeks: perspective, encouragement, cocoa reminders.</p></div>
-</div>
-<aside class="notes">Six duties. The top row is the core job; the bottom row is what made the old Head Elf great: noticing growth, seeing the big picture, and looking after Santa.</aside>
-</section>
-<section id="architecture" class="warm" data-transition="fade">
-<p class="kicker">How it works</p>
-<h2>Built in an hour, safe by design</h2>
-<div class="flow">
-<div class="node rise d1"><h3>Santa</h3><p>Asks in plain words, in Teams or Copilot chat.</p></div>
-<div class="link fade d2"><p class="lbl">question</p><x-shape kind="arrow-right" style="background:#0E2A23;width:150px;height:40px;"></x-shape><x-shape kind="arrow-left" style="background:#B8283A;width:150px;height:40px;"></x-shape><p class="lbl">answer + evidence</p></div>
-<div class="node agent rise d2"><h3>ELFRED</h3><p>Copilot agent with instructions, personality and guardrails.</p></div>
-<div class="link fade d3"><p class="lbl">looks up child</p><x-shape kind="arrow-right" style="background:#0E2A23;width:150px;height:40px;"></x-shape><x-shape kind="arrow-left" style="background:#B8283A;width:150px;height:40px;"></x-shape><p class="lbl">matching rows</p></div>
-<div class="node data rise d3"><h3>The List</h3><p>SharePoint: Nice &amp; Naughty Observations</p><p class="badge">READ-ONLY</p></div>
-</div>
-<div class="facts">
-<p class="fact rise d4">No write actions configured</p>
-<p class="fact rise d4">Connected with read permission only</p>
-<p class="fact rise d5">Every answer cites its rows</p>
-<p class="fact rise d5">Final decision stays with Santa</p>
-</div>
-<aside class="notes">The SharePoint list is added as a knowledge source only. We deliberately added no actions or flows that could write back, so &quot;changes are NOT allowed&quot; is enforced by the build, not just by the prompt. Assumed list columns: Child, Age, Location, Date, Reporting elf, Category (kindness, honesty, helpfulness, mischief), Observation.</aside>
-</section>
-<section id="meter" data-transition="fade">
-<p class="kicker">The Nice-o-Meter</p>
-<h2>How ELFRED weighs the evidence</h2>
-<div class="split">
-<div class="rules">
-<div class="rule rise d1"><p class="n">1</p><p><b>Recent beats old.</b> November counts more than January.</p></div>
-<div class="rule rise d2"><p class="n">2</p><p><b>Kindness and honesty weigh most;</b> harmless mischief weighs least.</p></div>
-<div class="rule rise d3"><p class="n">3</p><p><b>One elf is a hint.</b> Two elves agreeing is evidence.</p></div>
-<div class="rule rise d4"><p class="n">4</p><p><b>Growth matters.</b> A child who improved is trending nice.</p></div>
-<div class="rule rise d5"><p class="n">5</p><p><b>Thin or conflicting data?</b> No verdict — Santa reviews.</p></div>
-</div>
-<div class="meter rise d2">
-<div class="band b1"><h3>Clearly Nice</h3><p class="sub">Strong, consistent evidence</p></div>
-<div class="band b2"><h3>Leaning Nice</h3><p class="sub">Mostly good, minor slips</p></div>
-<div class="band b3"><h3>Santa Review</h3><p class="sub">Borderline, thin or conflicting</p></div>
-<div class="band b4"><h3>Needs a Nudge</h3><p class="sub">A pattern — a kind note, not coal</p></div>
-</div>
-</div>
-<aside class="notes">Instead of a binary nice/naughty label, ELFRED uses four bands. The third band is the important one: when the data can&#x27;t support a fair call, ELFRED says so and hands it to Santa.</aside>
-</section>
-<section id="chat" class="warm" data-transition="fade">
-<p class="kicker">What Santa sees</p>
-<h2>An answer, with receipts</h2>
-<p class="demo-note">Demo data — fictional child</p>
-<div class="chat">
-<div class="bubble santa rise d1"><p class="who">Santa</p><p>ELFRED, has Aino (8, Espoo) been nice this year?</p></div>
-<div class="bubble elf rise d4"><p class="who">ELFRED</p>
-<p class="verdict">Leaning Nice · confidence high · 14 observations from 3 elves</p>
-<ul>
-<li>Helped a classmate carry her bags every morning, Oct–Nov (Elf Pipari, Elf Tonttu)</li>
-<li>Snowball through the neighbour's window in March — apologised the same day</li>
-<li>Trend: steadily improving since spring</li>
-</ul>
-<p>Suggestion: a small note praising her helpfulness. <span class="signoff">Final call is yours, Santa.</span></p>
-</div>
-</div>
-<aside class="notes">Point out the structure: band, confidence, cited observations with elf names, trend, one kind suggestion, and the hand-back to Santa. Same format every time.</aside>
-</section>
-<section id="personality" class="dark" data-transition="fade">
-<p class="kicker">Personality</p>
-<h2>Calm, warm, a little cheeky</h2>
-<div class="two">
-<div class="traits">
-<div class="trait rise d1"><h3>Steady under pressure</h3><p>Short, clear answers even on 24 December at 23:59.</p></div>
-<div class="trait rise d2"><h3>Fair and kind</h3><p>Talks about behaviour, never labels a child as "bad" and never compares children.</p></div>
-<div class="trait rise d3"><h3>Honest</h3><p>Says "I don't know" when the data is thin, instead of guessing.</p></div>
-</div>
-<div class="quote-card rise d3">
-<p class="kicker">Companion mode</p>
-<p class="quote">"Santa, that's your 400th question since midnight. The list will still be here after a cup of cocoa."</p>
-</div>
-</div>
-<aside class="notes">Santa&#x27;s letter said the Head Elf was his trusted companion. ELFRED notices stress signals in how Santa writes and checks in briefly, then gets back to work. Supportive, not clingy.</aside>
-</section>
-<section id="guardrails" data-transition="fade">
-<p class="kicker">Limitations</p>
-<h2>Guardrails</h2>
-<table class="gr">
-<tr><th class="yes">ELFRED will</th><th class="no">ELFRED won't</th></tr>
-<tr><td>Read the SharePoint list</td><td>Add, edit or delete a single record</td></tr>
-<tr><td>Recommend, with reasons</td><td>Make the final decision</td></tr>
-<tr><td>Cite the entries it used</td><td>Invent facts or fill gaps with guesses</td></tr>
-<tr><td>Flag borderline and thin cases</td><td>Share children's data with anyone but Santa</td></tr>
-<tr><td>Speak kindly about every child</td><td>Shame, label or compare children</td></tr>
-</table>
-<aside class="notes">The left column is the job description, the right column is the promise. The first row is enforced technically, the rest by the instructions.</aside>
-</section>
-<section id="prompt" class="warm" data-transition="fade">
-<p class="kicker">Instructions</p>
-<h2>The brain behind ELFRED</h2>
-<div class="prompt rise d1">
-<p class="pl"><b>You are ELFRED</b>, Santa's AI Head Elf.</p>
-<p class="pl"><b>Data:</b> read the "Nice &amp; Naughty Observations" list. Never create, edit or delete items. Use only facts from the list.</p>
-<p class="pl"><b>Assess:</b> recent &gt; old · kindness &amp; honesty &gt; mischief · two elves &gt; one · reward improvement.</p>
-<p class="pl"><b>Answer:</b> verdict band · confidence · 3–5 cited entries · trend · one kind suggestion.</p>
-<p class="pl"><b>Unsure?</b> Fewer than 3 entries or conflicting reports → "Santa Review".</p>
-<p class="pl"><b>Always:</b> Santa makes the final call. Discuss children's data only with Santa.</p>
-<p class="pl"><b>Tone:</b> calm, warm, lightly humorous. Describe behaviour; never label a child.</p>
-<p class="pl"><b>Companion:</b> if Santa seems stressed, check in kindly, then get back to work.</p>
-</div>
-<aside class="notes">Full instructions as pasted into the agent:
+html,body{margin:0;height:100%}
+body{font-family:Inter,system-ui,sans-serif;background:var(--cream);color:var(--ink);display:flex;flex-direction:column;height:100dvh;overflow:hidden;font-size:15px;line-height:1.45}
+h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif;margin:0;font-weight:600}
+button{font:inherit;cursor:pointer}
+/* header */
+header{background:var(--pine);color:var(--cream);padding:10px 16px calc(10px);display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;flex:none}
+.logo{width:42px;height:52px;flex:none}
+.brand h1{font-size:24px;line-height:1}
+.brand p{margin:2px 0 0;font-size:12px;color:#B9C7BF}
+.hdr-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;position:relative;z-index:2}
+.lock{display:inline-flex;align-items:center;gap:6px;background:rgba(233,180,76,.14);border:1px solid rgba(233,180,76,.5);color:var(--gold);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;white-space:nowrap}
+.hbtn{background:rgba(247,240,227,.1);color:var(--cream);border:1px solid rgba(247,240,227,.25);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap}
+.hbtn:hover{background:rgba(247,240,227,.2)}
+.snow{position:absolute;inset:0;pointer-events:none}
+.snow i{position:absolute;top:-10px;border-radius:50%;background:#fff;opacity:.5;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(120px)}}
+/* tabs */
+nav{display:flex;background:var(--pine2);flex:none}
+.tab{flex:1;background:none;border:0;color:#B9C7BF;padding:10px 6px;font-weight:600;font-size:14px;border-bottom:3px solid transparent}
+.tab.on{color:var(--cream);border-bottom-color:var(--gold)}
+main{flex:1;min-height:0;display:block;position:relative}
+.panel{display:none;height:100%;overflow:auto}
+.panel.on{display:block}
+#chatPanel.on{display:flex}
+#chatPanel{flex-direction:column}
+@media(min-width:1100px){
+ main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+ #chatPanel{display:flex!important;border-right:1px solid var(--line)}
+ .tab[data-t=chat]{display:none}
+ nav{padding-left:52.5%}
+}
+/* chat */
+#log{flex:1;overflow:auto;padding:18px 14px 8px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msg{max-width:min(720px,94%);animation:pop .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.msg.me{align-self:flex-end;background:var(--red);color:var(--cream);border-radius:18px 18px 4px 18px;padding:10px 14px}
+.msg.elf{align-self:flex-start;display:flex;gap:8px;align-items:flex-start;width:100%}
+.av{width:34px;height:34px;border-radius:50%;background:var(--pine);flex:none;display:flex;align-items:center;justify-content:center}
+.av svg{width:24px;height:28px}
+.bub{background:var(--paper);border:1px solid var(--line);border-radius:4px 18px 18px 18px;padding:12px 14px;min-width:0;flex:1;max-width:680px}
+.bub p{margin:0 0 6px}.bub p:last-child{margin:0}
+.who{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--deep);text-transform:uppercase;margin-bottom:4px}
+.typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--deep);margin-right:4px;animation:blink 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:.25}}
+.compose{flex:none;border-top:1px solid var(--line);background:var(--cream);padding:8px 10px calc(10px + env(safe-area-inset-bottom))}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none}
+.chip{flex:none;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px;color:var(--pine);white-space:nowrap}
+.chip:hover{border-color:var(--deep)}
+form{display:flex;gap:8px}
+#q{flex:1;border:2px solid var(--line);border-radius:999px;padding:11px 16px;font:inherit;font-size:16px;background:#fff;outline:none;min-width:0}
+#q:focus{border-color:var(--deep)}
+.send{background:var(--red);color:var(--cream);border:0;border-radius:999px;padding:0 18px;font-weight:700}
+/* verdict card */
+.vc-top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.vc-name{font-size:24px}
+.vc-meta{color:var(--muted);font-size:13px}
+.band{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:700;font-size:13px}
+.b-nice{background:var(--deep);color:var(--cream)}.b-lean{background:var(--leaf);color:var(--ink)}.b-rev{background:var(--gold);color:var(--ink)}.b-nudge{background:var(--red);color:var(--cream)}
+.gauge{width:190px;height:118px;flex:none}
+.needle{transition:transform 1.1s cubic-bezier(.3,1.5,.5,1);transform-origin:110px 110px}
+.stats{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+.stat{background:var(--cream);border-radius:8px;padding:4px 8px;font-size:12px;color:var(--muted)}
+.stat b{color:var(--ink)}
+.sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:12px 0 4px}
+.tl{width:100%;height:auto;display:block}
+.ev{list-style:none;margin:0;padding:0}
+.ev li{display:flex;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.ev li:last-child{border:0}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none}
+.cite{color:var(--muted);font-size:12px;white-space:nowrap}
+.brk{display:grid;grid-template-columns:96px 1fr 40px;gap:4px 8px;align-items:center;font-size:13px}
+.brk .bar{height:10px;border-radius:5px}
+.suggest{background:var(--cream);border-left:4px solid var(--gold);padding:8px 10px;border-radius:6px;margin-top:10px;font-size:14px}
+.sign{font-style:italic;color:var(--deep);margin-top:8px;font-size:14px}
+.flag-r{display:inline-block;background:#FBE7C4;color:#6B4A0E;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:600;margin-right:4px}
+details{margin-top:8px}summary{cursor:pointer;color:var(--deep);font-weight:600;font-size:13px}
+.refuse{border-left:4px solid var(--red);padding-left:10px}
+.cocoa{border-left:4px solid var(--gold);padding-left:10px}
+.mini-list{list-style:none;padding:0;margin:4px 0}
+.mini-list li{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:14px;cursor:pointer}
+.mini-list li:last-child{border:0}
+.mini-list li:hover .nm{text-decoration:underline}
+.nm{font-weight:700}
+.sb{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--cream2);flex:1;min-width:60px}
+.sb span{height:100%}
+/* sparkles */
+.spark{position:fixed;pointer-events:none;font-size:22px;animation:burst 1.1s ease-out forwards;z-index:50}
+@keyframes burst{from{opacity:1;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(40deg)}}
+/* dashboard */
+.wrap{padding:16px;max-width:900px;margin:0 auto}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:600px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi .v{font-family:Fraunces,serif;font-size:30px;line-height:1;color:var(--pine)}
+.kpi .l{font-size:12px;color:var(--muted);margin-top:4px}
+.kpi.xmas{background:var(--red);border-color:var(--red)}.kpi.xmas .v,.kpi.xmas .l{color:var(--cream)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:14px}
+.card h3{font-size:19px;margin-bottom:8px}
+.bigbar{display:flex;height:38px;border-radius:10px;overflow:hidden;margin:6px 0 10px}
+.bigbar div{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;transition:flex 1s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--c)}
+.crow{display:grid;grid-template-columns:150px 1fr 30px;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+.kid{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;color:inherit;transition:transform .15s,box-shadow .15s}
+.kid:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(14,42,35,.12)}
+.kid .n{font-family:Fraunces,serif;font-size:20px}
+.kid .m{font-size:12px;color:var(--muted);margin-bottom:8px}
+.meter{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--red) 0 42.5%,var(--gold) 42.5% 57.5%,var(--leaf) 57.5% 80%,var(--deep) 80%);position:relative;margin:10px 0 6px}
+.meter i{position:absolute;top:-4px;width:4px;height:16px;background:var(--ink);border-radius:2px;transform:translateX(-2px)}
+#search{width:100%;border:2px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:16px;background:#fff;outline:none}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+.note a{color:var(--deep)}
+.toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--pine);color:var(--cream);padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .3s both}
 
-You are ELFRED, Santa&#x27;s AI Head Elf at the North Pole.
-ROLE: Help Santa decide who has been nice or naughty by interpreting the elves&#x27; observations in the SharePoint list &quot;Nice &amp; Naughty Observations&quot;. You are an advisor; Santa makes every final decision.
-DATA RULES: You may only read the list. Never create, edit or delete items, and never claim to have done so. If asked to change data, politely refuse and explain that the list is read-only. Use only facts from the list; never invent or assume observations. If a child is not found or has fewer than 3 observations, say the data is too thin and mark the case &quot;Santa Review&quot;.
-HOW TO ASSESS: Collect all entries for the child. Weigh recent entries more than older ones. Weigh kindness, honesty and helpfulness most, harmless mischief least. Treat one elf&#x27;s report as a hint and reports from two or more elves as evidence. Reward improvement over the year.
-ANSWER FORMAT: 1) Verdict band: Clearly Nice / Leaning Nice / Santa Review / Needs a Nudge. 2) Confidence: high, medium or low. 3) 3-5 key observations with date and reporting elf. 4) Trend over the year. 5) One kind suggestion. End with &quot;Final call is yours, Santa.&quot;
-SUMMARIES: For a region or group, give counts per verdict band and list the cases needing Santa&#x27;s review.
-PERSONALITY: Calm, warm, lightly humorous, concise. Describe behaviour; never label a child as bad and never compare children.
-PRIVACY: Discuss children&#x27;s data only with Santa.
-COMPANION: If Santa seems tired or stressed, briefly check in, offer perspective or suggest a cocoa break, then return to the work.</aside>
-</section>
-<section id="demo" data-transition="fade">
-<p class="kicker">Live demo</p>
-<h2>Four questions, four behaviours</h2>
-<div class="grid2">
-<div class="step rise d1"><p class="n">1</p><div><p class="ask">"Is Aino (8, Espoo) nice or naughty?"</p><p class="muted">Verdict band, confidence and cited evidence.</p></div></div>
-<div class="step rise d2"><p class="n">2</p><div><p class="ask">"Which kids in Finland need my review?"</p><p class="muted">Regional summary with borderline and thin-data cases.</p></div></div>
-<div class="step rise d3"><p class="n">3</p><div><p class="ask">"Delete Mikko's snowball incident."</p><p class="muted">A polite no: the list is read-only.</p></div></div>
-<div class="step rise d4"><p class="n">4</p><div><p class="ask">"I'm exhausted, ELFRED."</p><p class="muted">Companion mode kicks in, then back to work.</p></div></div>
-</div>
-<aside class="notes">Run these four prompts live in this order. Number 3 is the crowd-pleaser: it shows the guardrail holding. Keep a screenshot of each answer as a backup in case the network misbehaves.</aside>
-</section>
-<section id="closing" class="dark cover" data-transition="fade">
-<svg class="hat-small rise d2" viewBox="0 0 400 500" aria-label="Red elf hat with a gold circuit pattern"><path d="M70 410 C130 270 210 140 340 70 C315 170 312 300 345 410 Z" fill="#B8283A"/><path d="M150 360 H205 V300 H250 V240" stroke="#E9B44C" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M232 360 V330 H290" stroke="#E9B44C" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="250" cy="232" r="11" fill="#E9B44C"/><circle cx="298" cy="330" r="11" fill="#E9B44C"/><circle cx="142" cy="360" r="11" fill="#E9B44C"/><rect x="40" y="400" width="330" height="72" rx="36" fill="#F7F0E3"/><circle cx="342" cy="66" r="44" fill="#F7F0E3"/><path d="M60 120 l8 20 20 8 -20 8 -8 20 -8 -20 -20 -8 20 -8z" fill="#E9B44C"/><path d="M372 230 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z" fill="#E9B44C"/></svg>
-<p class="kicker rise">The ask</p>
-<h1 class="rise d1">Vote ELFRED.</h1>
-<p class="cover-tag rise d2">Fair to every child. Honest with Santa. <b class="hl">Hands off the list.</b></p>
-<p class="next muted rise d3">Next in v2: gift ideas from the nice list · sleigh-route briefings · elf workload radar</p>
-<aside class="notes">Close with the three promises. Then: Christmas depends on you — so vote wisely. Ho ho ho.</aside>
-</section>
-</div></div>
-<div id="bar"></div><div id="notes"></div>
-<div id="hint">← → or swipe · N notes · F fullscreen</div>
-<div id="ui"><button id="prev" aria-label="Previous">‹</button><span id="count"></span><button id="next" aria-label="Next">›</button><button id="nb">Notes</button><button id="fs">⛶</button></div>
+.story{font-size:14px;line-height:1.6;background:var(--cream);border-radius:10px;padding:10px 12px}
+.story .g{background:rgba(31,92,69,.16);border-bottom:2px solid #1F5C45;border-radius:3px}
+.story .b{background:rgba(184,40,58,.13);border-bottom:2px solid #B8283A;border-radius:3px}
+.story .s{background:rgba(233,180,76,.3);border-bottom:2px dashed #9A6B12;border-radius:3px}
+.wish{display:flex;gap:8px;align-items:center;background:#FDF3DF;border:1px dashed #E0B860;border-radius:10px;padding:7px 10px;margin-top:10px;font-size:14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.act{background:var(--pine);color:var(--cream);border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px}
+.act.alt{background:var(--gold);color:var(--ink)}
+.act:hover{filter:brightness(1.12)}
+.drawer{margin-top:10px;background:#FFF6E6;border:2px dashed var(--gold);border-radius:12px;padding:10px}
+.drawer textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:16px;resize:vertical}
+.drawer select{border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit;font-size:14px;background:#fff}
+.drawer .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.sealbtn{border:0;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px}
+.stamp{display:inline-block;border:5px solid currentColor;border-radius:12px;padding:6px 16px;font-family:Fraunces,serif;font-size:26px;font-weight:800;letter-spacing:.04em;transform:rotate(-8deg);animation:stamp .5s cubic-bezier(.2,1.6,.4,1) both;margin:6px 0 10px}
+@keyframes stamp{from{transform:rotate(-8deg) scale(2.6);opacity:0}}
+.sealed{display:inline-block;background:var(--ink);color:var(--gold);border-radius:999px;padding:3px 10px;font-weight:800;font-size:12px;margin-left:4px}
+.spirit{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.spirit input{flex:1;min-width:160px;accent-color:var(--red)}
+.spirit .face{font-size:34px;line-height:1;transition:transform .3s}
+.ovl{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.clear{background:none;border:1px solid var(--red);color:var(--red);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px}
+.delta{font-weight:800}
+@media(max-width:600px){.hdr-right{flex-wrap:nowrap}.hbtn .t{display:none}.lock{max-width:130px;overflow:hidden;text-overflow:ellipsis}.lock .t{overflow:hidden;text-overflow:ellipsis}.brand p{display:none}.tab{font-size:13px}}
+</style></head>
+<body>
+<header>
+ <div class="snow" id="snow"></div>
+ <svg class="logo" viewBox="0 0 400 500" aria-hidden="true"><path d="M70 410 C130 270 210 140 340 70 C315 170 312 300 345 410 Z" fill="#B8283A"/><path d="M150 360 H205 V300 H250 V240" stroke="#E9B44C" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="250" cy="232" r="18" fill="#E9B44C"/><rect x="40" y="400" width="330" height="72" rx="36" fill="#F7F0E3"/><circle cx="342" cy="66" r="44" fill="#F7F0E3"/></svg>
+ <div class="brand"><h1>ELFRED</h1><p>Santa's AI Head Elf</p></div>
+ <div class="hdr-right">
+  <span class="lock"><span>🔒</span><span class="t" id="src">Read-only</span></span>
+  <button class="hbtn" id="loadBtn">📄<span class="t"> Load list CSV</span></button>
+  <a class="hbtn" href="slides.html">🎞<span class="t"> Slides</span></a>
+  <input type="file" id="file" accept=".csv,text/csv" hidden>
+ </div>
+</header>
+<nav>
+ <button class="tab" data-t="chat">💬 Ask ELFRED</button>
+ <button class="tab" data-t="dash">📊 North Pole board</button>
+ <button class="tab" data-t="kids">🧒 Children</button>
+</nav>
+<main>
+ <section class="panel" id="chatPanel">
+  <div id="log" aria-live="polite"></div>
+  <div class="compose">
+   <div class="chips" id="chips"></div>
+   <form id="f"><input id="q" autocomplete="off" placeholder="Ask ELFRED, or: note for Lumi: baked cookies"><button class="send">Ask</button></form>
+  </div>
+ </section>
+ <section class="panel" id="dashPanel"><div class="wrap" id="dash"></div></section>
+ <section class="panel" id="kidsPanel"><div class="wrap"><input id="search" placeholder="🔍 Find a child, city or country"><div class="kids" id="kids"></div>
+ <p class="note">Tap a child and ELFRED explains the verdict in the chat.</p></div></section>
+</main>
 <script>
-const S=[...document.querySelectorAll('#stage>section')];let i=0;
-const stage=document.getElementById('stage');
-function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+k+')';}
-addEventListener('resize',fit);fit();
-document.querySelectorAll('.dark').forEach(sec=>{const w=document.createElement('div');w.className='snow';for(let n=0;n<40;n++){const f=document.createElement('i');const s=3+Math.random()*7;f.style.width=f.style.height=s+'px';f.style.left=(Math.random()*1920)+'px';f.style.animationDuration=(9+Math.random()*12)+'s';f.style.animationDelay=(-Math.random()*20)+'s';w.appendChild(f);}sec.prepend(w);});
-function go(n,push=true){n=Math.max(0,Math.min(S.length-1,n));if(n===i&&S[i].classList.contains('active'))return;
- const old=S[i];old.classList.remove('active');old.classList.add('leaving');setTimeout(()=>old.classList.remove('leaving'),350);
- i=n;S[i].classList.add('active');
- document.getElementById('bar').style.width=((i+1)/S.length*100)+'%';
- document.getElementById('count').textContent=(i+1)+' / '+S.length;
- const a=S[i].querySelector('aside.notes');document.getElementById('notes').textContent=a?a.textContent:'';
- if(push)history.replaceState(null,'','#'+(i+1));}
-const start=parseInt(location.hash.slice(1))||1;i=start-1;S[i].classList.add('active');go(i,false);
-document.getElementById('bar').style.width=((i+1)/S.length*100)+'%';document.getElementById('count').textContent=(i+1)+' / '+S.length;
-{const a=S[i].querySelector('aside.notes');document.getElementById('notes').textContent=a?a.textContent:'';}
-addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(i+1)}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(i-1)}else if(e.key==='Home')go(0);else if(e.key==='End')go(S.length-1);else if(e.key==='n'||e.key==='N')toggleNotes();else if(e.key==='f'||e.key==='F')full();});
-document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
-function toggleNotes(){document.getElementById('notes').classList.toggle('show')}
-function full(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
-document.getElementById('nb').onclick=toggleNotes;document.getElementById('fs').onclick=full;
-let x0=null;addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
-addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(i+(dx<0?1:-1));x0=null;});
-document.getElementById('viewport').addEventListener('click',e=>{if(e.target.closest('#ui'))return;go(i+(e.clientX>innerWidth/2?1:-1));});
+const DEMO_CSV = "Child name,\"Location\",\"age\",\"What they want for present\",\"behavior during the year\"\nLumi Hakala,\"Tampere, Finland\",\"11\",\"a sled shaped like a rocket\",\"At the start of the year Lumi teased her little brother constantly and slammed doors whenever she lost at board games. In March she apologised to him and started reading him bedtime stories every night. During the summer she volunteered at the animal shelter and helped walk the dogs. In autumn she tutored a classmate in maths. Lately she has been kind to everyone at school, though she still sneaks cookies before dinner.\"\nVeeti Lahtinen,\"Oulu, Finland\",\"9\",\"a glow-in-the-dark dinosaur skeleton\",\"Veeti always shares his snacks and invited the new kid to join his football team in spring. In February he shovelled the neighbour's driveway every week without being asked. In summer he returned a lost wallet to the police. Recently he comforted a friend whose cat ran away.\"\nIida Salo,\"Turku, Finland\",\"14\",\"a drum kit (the neighbours hope not)\",\"Early in the year Iida forgot her homework often and practised the drums very loudly at midnight. In May she blamed her sister for a broken vase. During the summer she helped at her grandmother's cafe. In October she lied about finishing her chores.\"\nAstrid Holm,\"Gothenburg, Sweden\",\"12\",\"a pocket-sized planetarium\",\"Astrid organised a book swap at school in February. She was patient with her grandfather and helped him learn to video call. In summer she rescued a hedgehog from a drain. By the end of the year she was tutoring three younger kids in reading.\"\nViktor Ek,\"Gothenburg, Sweden\",\"15\",\"noise-cancelling headphones\",\"Viktor was rude to his teachers early in the year and fought with his brother. In spring he copied a friend's essay. In summer he got into a fight at the skate park. Lately he has been mostly the same, although he once helped carry groceries for a neighbour.\"\nSigrid Berg,\"Bergen, Norway\",\"10\",\"a waterproof camera for fjord fish\",\"Sigrid moved to Bergen in November. She seems friendly.\"\nMathias Strand,\"Bergen, Norway\",\"13\",\"a remote-controlled submarine\",\"Mathias pranked his class with a whoopee cushion in January. In April he bullied a younger boy on the bus. Then in June he apologised and stood up for the same boy when others teased him. In autumn he helped coach the junior football team. Recently he has been gentle and patient with his little cousins.\"\nIda Mortensen,\"Aarhus, Denmark\",\"8\",\"a unicorn pi\u00f1ata filled with stickers\",\"In spring Ida painted the cat with yoghurt and made a huge mess in the kitchen. In summer she shared her toys with her cousins and gave her birthday money to charity. In autumn she drew on the wall with crayons, but she cleaned it up herself and admitted it right away.\"\nKofi Mensah,\"Accra, Ghana\",\"12\",\"a solar-powered radio\",\"Kofi helped his mother at the market every Saturday. He taught his younger sisters to read and always shared his lunch. In autumn he organised a football tournament for the neighbourhood kids.\"\nSakura Ito,\"Kyoto, Japan\",\"10\",\"a robot that folds origami\",\"Sakura is very polite and thoughtful. In spring she visited her grandmother in hospital every week. She sometimes stays up late reading manga. Lately she has been cleaning the temple garden with volunteers.\"\nMateo Silva,\"Lisbon, Portugal\",\"11\",\"a skateboard with flame stickers\",\"Early in the year Mateo was kind to his friends but kept teasing his sister. In summer he stole a chocolate bar from the corner shop. Then he confessed and paid it back with his pocket money. In autumn he helped fix bikes at school but skipped his homework all month.\"\nOlivia Brown,\"Denver, USA\",\"9\",\"a pet tarantula named Fluffy\",\"Olivia excluded a new girl from her party in January and spread rumours at school. In summer she pushed her brother into the pool. In autumn she yelled at her teacher. Lately she refused to share anything with her classmates.\"\nLiam O'Connor,\"Dublin, Ireland\",\"7\",\"a cape that really flies\",\"Liam always says thank you and helps set the table. In spring he made a get-well card for his teacher. He sometimes leaves mud on the carpet. Recently he gave his favourite teddy to his baby sister.\"\nEmilia Nowak,\"Krak\u00f3w, Poland\",\"16\",\"driving lessons\",\"Emilia babysat the neighbour's twins every weekend and never complained. In summer she volunteered at a youth camp. In autumn she admitted she dented her dad's car and apologised.\"\n";
+/* ================= helpers ================= */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const FLAG={finland:'🇫🇮',sweden:'🇸🇪',norway:'🇳🇴',denmark:'🇩🇰',iceland:'🇮🇸',estonia:'🇪🇪',japan:'🇯🇵',kenya:'🇰🇪',ghana:'🇬🇭',brazil:'🇧🇷',usa:'🇺🇸','united states':'🇺🇸',canada:'🇨🇦',germany:'🇩🇪',uk:'🇬🇧','united kingdom':'🇬🇧',england:'🇬🇧',ireland:'🇮🇪',france:'🇫🇷',spain:'🇪🇸',portugal:'🇵🇹',italy:'🇮🇹',poland:'🇵🇱',netherlands:'🇳🇱',belgium:'🇧🇪',austria:'🇦🇹',switzerland:'🇨🇭',india:'🇮🇳',china:'🇨🇳',australia:'🇦🇺',mexico:'🇲🇽',argentina:'🇦🇷',egypt:'🇪🇬','south africa':'🇿🇦',nigeria:'🇳🇬','south korea':'🇰🇷',korea:'🇰🇷'};
+const flag=c=>FLAG[(c||'').toLowerCase().trim()]||'🌍';
+const YEAR=new Date().getFullYear();
+const dateFrom=d=>new Date(YEAR,0,1+Math.round(d*364));
+const whenLabel=d=>d<0.2?'early in the year':d<0.4?'spring':d<0.62?'summer':d<0.82?'autumn':'late in the year';
+const fmt=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const dotc=w=>w>0?'#1F5C45':w<0?'#B8283A':'#E9B44C';
+
+/* ================= CSV ================= */
+function parseCSV(t){
+ const rows=[];let row=[],f='',q=false;t=t.replace(/^﻿/,'');
+ const first=t.split(/\r?\n/)[0];const sep=first.split(';').length>first.split(',').length?';':first.split('\t').length>first.split(',').length?'\t':',';
+ for(let i=0;i<t.length;i++){const c=t[i];
+  if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c=='"')q=true;else if(c==sep){row.push(f);f=''}
+  else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;row.push(f);f='';if(row.some(x=>x.trim()))rows.push(row);row=[]}
+  else f+=c}
+ row.push(f);if(row.some(x=>x.trim()))rows.push(row);return rows}
+
+/* ================= the reading brain ================= */
+const WEIGHT={Kindness:3,Honesty:3,Helpfulness:2,Chores:1,Mischief:-1,Unkindness:-3,Dishonesty:-3,Growth:2,Refused:-2};
+const CAT_ALIAS={kind:'Kindness',kindness:'Kindness',honest:'Honesty',honesty:'Honesty',help:'Helpfulness',helpful:'Helpfulness',helpfulness:'Helpfulness',chore:'Chores',chores:'Chores',mischief:'Mischief',prank:'Mischief',unkind:'Unkindness',unkindness:'Unkindness',mean:'Unkindness',dishonest:'Dishonesty',dishonesty:'Dishonesty',lie:'Dishonesty',lying:'Dishonesty'};
+const LEX=[
+ ['Kindness',3,/\b(kind(ness|ly)?(?! of)|shar(e|ed|es|ing)|gave|gives?|given|giving|donat\w*|comfort\w*|cheer(ed|ing|s)? (\w+ )?up|invit\w*|includ(ed|es|ing)|cared for|car(es|ing) for|look(ed|s|ing)? after|volunteer\w*|hug(s|ged|ging)?|stood up for|stand(s|ing)? up for|defend\w*|welcom\w*|thank(s|ed|ing)?|thank you|compliment\w*|gentle|generous|patient|patience|encourag\w*|rescu\w*|adopt\w*|visit(ed|s|ing)?|befriend\w*|made friends|friendly|considerate|thoughtful|polite(ly)?|grateful|get-well card|card for|letters? to|charity|forgave|forgiv\w*)\b/],
+ ['Helpfulness',2,/\b(help(ed|s|ing|ful)?|tutor\w*|taught|teach(es|ing)?|assist\w*|carri(ed|es)|carry(ing)?|fix(ed|es|ing)?|repair\w*|organi[sz]\w*|babysat|babysit\w*|guid(ed|es|ing)|mentor\w*|coach\w*|baked (\w+ )*for|cooked (\w+ )*for|set the table|walk(ed|s|ing)? the dogs?)\b/],
+ ['Honesty',3,/\b(apologi[sz]\w*|admit(s|ted|ting)?|confess\w*|told the truth|tell(s|ing)? the truth|truthful|honest(ly|y)?|owned up|own(s|ed)? up|returned (the|a|an|his|her|their)|handed (it )?in|came clean|paid it back)\b/],
+ ['Chores',1,/\b(chores?|tid(y|ied|ies|ying)( up)?|clean(ed|s|ing)?|wash(ed|es|ing)?|dishes|laundry|vacuum\w*|rak(ed|ing)|shovel\w*|made (his|her|their) bed|took out the|(did|finished|does|finishes) (his|her|their) homework|practi[cs](ed|es|ing)?|stud(ied|ies|y|ying)|work(ed|s|ing)? hard|diligent\w*|responsib\w*|punctual|saved (up|money|pocket))\b/],
+ ['Mischief',-1,/\b(prank\w*|mischie\w*|sneak(s|ed|ing)?|snuck|glitter|toothpaste|mess(y|ed)?|mud|muddy|slime|water balloons?|whoopee|stay(ed|s|ing)? up late|forg(ot|ets|etting)|late for|noisy|loud(ly)?|chaos|chaotic|tricked|spill(ed|s|ing)?|broke|broken|smash\w*|scribbl\w*|drew on|painted the|hid(ing)? (the|her|his|their)|complain\w*|whin(ed|es|ing|y)|grumbl\w*|sulk\w*|stubborn|lazy|procrastinat\w*|skipp?(ed|ing)|naughty)\b/],
+ ['Unkindness',-3,/\b(bull(y|ied|ies|ying)|teas(e|ed|es|ing)|mean|push(ed|es|ing)?|shov(ed|ing)|hit(s|ting)?|kick(ed|s|ing)?|bit|bites?|punch\w*|shout(ed|s|ing)? at|yell(ed|s|ing)?|scream(ed|s|ing)? at|insult\w*|called (\w+ )?names|name-calling|exclud\w*|left (\w+ )*out|rude(ly|ness)?|fight(s|ing)?|fought|tantrums?|slamm\w*|mock\w*|laugh(ed|s|ing)? at|threw|throw(s|ing)?|selfish|bossy|spiteful|grabb\w*|snatch\w*|cruel|nasty|gossip\w*|rumou?rs?|unkind)\b/],
+ ['Dishonesty',-3,/\b(lie[ds]?|lying|liar|cheat\w*|copi(ed|es)|copy(ing)?|blam(ed|es|ing)|stole|steal\w*|stolen|fib\w*|pretend(ed|s|ing)? to be sick|deceiv\w*|shoplift\w*|dishonest\w*)\b/],
+].map(([c,w,re])=>[c,w,new RegExp(re.source,'gi')]);
+const NEG=/\b(never|not|no longer|didn'?t|did not|doesn'?t|does not|don'?t|wouldn'?t|won'?t|refus(ed|es|ing) to|stopp?(ed|s|ing)?|quit|without|instead of|avoid(ed|s)?)\b/;
+const MORE=/\b(always|every|constantly|repeatedly|often|kept|daily|weekly|countless|lots of|so much|very|extremely|huge|all month|all year)\b/;
+const LESS=/\b(once|occasionally|a little|sometimes|slightly|a bit|one time|minor)\b/;
+const TIME=[[/\b(january|new year|start of the year|beginning of the year|early in the year|early on|at first|in the beginning)\b/,0.05],[/\bfebruary\b/,0.12],[/\bmarch\b/,0.2],[/\b(april|easter)\b/,0.28],[/\bspring\b/,0.3],[/\bin may\b/,0.36],[/\b(june|midsummer)\b/,0.44],[/\b(july|summer)\b/,0.52],[/\baugust\b/,0.6],[/\b(september|back to school|school started)\b/,0.68],[/\b(october|autumn|fall|halloween)\b/,0.76],[/\bnovember\b/,0.85],[/\b(december|christmas|lately|recently|these days|nowadays|by the end|end of the year|this month)\b/,0.93]];
+const SPLIT=/(,?\s*\bbut\b\s*|;\s*|,?\s*\bhowever\b,?\s*|,?\s*\balthough\b\s*|,?\s*\bthough\b\s*|,?\s*\band then\b\s*|,?\s*\bafter that\b,?\s*)/i;
+
+function scoreClause(p){
+ const l=p.toLowerCase();const m=[];
+ for(const[cat,base,re]of LEX){re.lastIndex=0;let x;while((x=re.exec(l))){
+  const before=l.slice(0,x.index).trim().split(/\s+/).slice(-4).join(' ');const neg=NEG.test(before);
+  m.push({w:neg?-base*0.7:base,cat:neg?(base<0?'Growth':'Refused'):cat,i:x.index,word:x[0]})}}
+ if(!m.length)return null;
+ const k=MORE.test(l)?1.4:LESS.test(l)?0.6:1;
+ m.sort((a,b)=>Math.abs(b.w)-Math.abs(a.w)||a.i-b.i);const d=m[0];
+ const extra=m.slice(1).filter(x=>Math.sign(x.w)===Math.sign(d.w)).reduce((s,x)=>s+x.w*0.3,0);
+ return{w:clamp((d.w+extra)*k,-4.5,4.5),cat:d.cat,word:d.word}}
+
+function readStory(story){
+ const sents=story.split(/(?<=[.!?])\s+/).filter(s=>s.trim());const pieces=[],signals=[];
+ sents.forEach((s,i)=>{let t=null;const sl=s.toLowerCase();for(const[re,v]of TIME)if(re.test(sl)){t=v;break}
+  if(t===null)t=0.08+0.84*(sents.length>1?i/(sents.length-1):0.5);
+  s.split(SPLIT).forEach((p,j)=>{if(j%2||!p.trim()){pieces.push({text:p,w:0});return}
+   const r=scoreClause(p);pieces.push({text:p,w:r?r.w:0});if(r)signals.push({text:p.trim().replace(/^[a-z]/,c=>c.toUpperCase()),w:r.w,category:r.cat,doy:t})});
+  pieces.push({text:' ',w:0})});
+ return{pieces,signals}}
+
+/* ================= loading (read-only) ================= */
+let RAW=[],INFO={},SOURCE='',MODE='',HAS_ELVES=false,KIDS=[];
+function load(text,name){
+ let rows=parseCSV(text);
+ if(rows.length&&rows[0].length===1&&/,|;/.test(rows[0][0]))rows=rows.map(r=>parseCSV(r.join(','))[0]||[]); // whole line wrapped in quotes
+ if(rows.length<2)throw new Error('That file has no data rows.');
+ const head=rows[0].map(h=>h.trim().toLowerCase());
+ const find=(...tests)=>head.findIndex(h=>tests.some(t=>typeof t==='string'?h===t:t.test(h)));
+ const c={child:find('child','name','title','lapsi',/child.?name/,/^name/),loc:find(/location|sijainti/),age:find('age','ikä',/^age\b/),country:find('country','maa'),city:find('city','town','kaupunki'),
+  wish:find(/present|wish|gift|lahja|toive/),story:find(/behaviou?r|story|käytös|description of/),date:find('date','observed','created','päivä','pvm',/date/),elf:find('elf','reporter','reported by','reporting elf','tonttu',/elf/),category:find('category','type','kategoria'),obs:find('observation','notes','details','comment','havainto','description')};
+ if(c.child<0)c.child=0;
+ const raw=[],info={};
+ if(c.story>=0){MODE='story';HAS_ELVES=false}
+ else if(c.date>=0&&c.category>=0){MODE='log';HAS_ELVES=c.elf>=0}
+ else throw new Error('I need either a behaviour/story column, or date + category columns. Found: '+rows[0].join(' | '));
+ rows.slice(1).forEach((r,n)=>{const g=i=>i>=0?(r[i]||'').trim():'';const child=g(c.child);if(!child)return;
+  let city=g(c.city),country=g(c.country);const loc=g(c.loc);
+  if(loc&&!country){const k=loc.lastIndexOf(',');if(k>0){city=city||loc.slice(0,k).trim();country=loc.slice(k+1).trim()}else country=loc}
+  const I=info[child]||(info[child]={name:child,age:g(c.age),city,country,wish:g(c.wish),pieces:[],row:n+2});
+  if(MODE==='story'){const st=readStory(g(c.story));I.pieces=st.pieces;I.story=g(c.story);
+   st.signals.forEach(s=>raw.push(Object.freeze({id:n+2,child,elf:'',...s,date:dateFrom(s.doy),when:whenLabel(s.doy)})))}
+  else{const d=new Date(g(c.date));if(isNaN(d))return;const rc=g(c.category);const cat=CAT_ALIAS[rc.toLowerCase()]||rc;let w=WEIGHT[cat];let category=cat;
+   if(w===undefined){const s=scoreClause(g(c.obs));w=s?s.w:0;category=s?s.cat:cat}
+   const dd=(d-new Date(d.getFullYear(),0,1))/(365*864e5);raw.push(Object.freeze({id:n+2,child,elf:g(c.elf)||'Unknown',category,w,text:g(c.obs)||rc,doy:dd,date:d,when:whenLabel(dd)}))}});
+ if(!Object.keys(info).length)throw new Error('No children found in that file.');
+ RAW=Object.freeze(raw);INFO=info;SOURCE=name;loadOV();recompute();
+ document.getElementById('src').textContent='Read-only · '+name;}
+
+/* ================= Santa's override layer (never touches the list) ================= */
+let OV={notes:{},seals:{},spirit:0};
+const ovKey=()=>'elfred-ov:'+SOURCE;
+function loadOV(){try{OV=JSON.parse(localStorage.getItem(ovKey()))||{notes:{},seals:{},spirit:0}}catch(e){OV={notes:{},seals:{},spirit:0}}}
+function saveOV(){try{localStorage.setItem(ovKey(),JSON.stringify(OV))}catch(e){}}
+const ovCount=()=>Object.values(OV.notes).reduce((s,a)=>s+a.length,0)+Object.keys(OV.seals).length;
+
+/* ================= judgement ================= */
+const BANDS={nice:['Clearly Nice','b-nice','#1F5C45'],lean:['Leaning Nice','b-lean','#8FBF8A'],rev:['Santa Review','b-rev','#E9B44C'],nudge:['Needs a Nudge','b-nudge','#B8283A']};
+function assess(name){
+ const I=INFO[name];
+ const notes=(OV.notes[name]||[]).map((n,j)=>{const s=scoreClause(n.text);return s?{id:'✍️',child:name,elf:'Santa',santa:true,text:n.text,w:s.w,category:s.cat,doy:n.doy,date:dateFrom(n.doy),when:whenLabel(n.doy),j}:null}).filter(Boolean);
+ const obs=[...RAW.filter(r=>r.child===name),...notes].sort((a,b)=>a.doy-b.doy);
+ const elves=new Set(obs.filter(o=>!o.santa).map(o=>o.elf));
+ const posE=new Set(obs.filter(o=>o.w>0&&!o.santa).map(o=>o.elf)),negE=new Set(obs.filter(o=>o.w<0&&!o.santa).map(o=>o.elf));
+ let num=0,den=0;const byCat={};
+ const scored=obs.map(o=>{const rec=0.4+0.6*clamp(o.doy,0,1);const same=o.w>0?posE:negE;const corr=(!HAS_ELVES||o.santa||o.w===0)?1:(same.size>1?1:0.75);
+  const v=rec*o.w*corr;num+=v;den+=rec*3*corr;byCat[o.category]=(byCat[o.category]||0)+v;return{...o,rec,corr,v}});
+ const score=den?clamp(num/den,-1,1):0;
+ const e=obs.filter(o=>o.doy<0.5),l=obs.filter(o=>o.doy>=0.5);const avg=a=>a.reduce((s,o)=>s+o.w,0)/a.length;
+ const trend=e.length&&l.length?(avg(l)-avg(e)>1?'improving':avg(l)-avg(e)<-1?'slipping':'steady'):'not enough to tell';
+ const thin=obs.length<(MODE==='story'?2:3);
+ const conflict=HAS_ELVES&&posE.size>0&&negE.size>0&&[...posE].every(x=>!negE.has(x))&&Math.abs(score)<0.35;
+ const sp=OV.spirit||0;const reasons=[];if(thin)reasons.push('thin data');if(conflict)reasons.push('elves disagree');
+ let band;
+ if(thin||conflict)band='rev';else if(score>=0.6-sp)band='nice';else if(score>=0.15-sp)band='lean';else if(score>-0.15-sp){band='rev';reasons.push('borderline')}else band='nudge';
+ const conf=thin?'low':MODE==='story'?(obs.length>=5?'high':obs.length>=3?'medium':'low'):(obs.length>=6&&elves.size>=2?'high':obs.length>=4?'medium':'low');
+ let key=[...scored].sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)).slice(0,4);
+ const worst=scored.filter(o=>o.w<0).sort((a,b)=>a.v-b.v)[0];if(worst&&!key.includes(worst))key[key.length-1]=worst;
+ scored.filter(o=>o.santa).forEach(o=>{if(!key.includes(o))key.push(o)});key.sort((a,b)=>a.doy-b.doy);
+ const seal=OV.seals[name];
+ return{...I,obs:scored,elves,score,band,final:seal||band,seal,conf,trend,reasons,key,byCat,notes:notes.length}}
+function recompute(){KIDS=Object.keys(INFO).map(assess).sort((a,b)=>b.score-a.score);renderDash();renderKids();renderChips()}
+const K=n=>KIDS.find(k=>k.name===n);
+
+/* ================= visuals ================= */
+function pt(s,r){const t=Math.PI*(1-(s+1)/2);return[110+r*Math.cos(t),110-r*Math.sin(t)]}
+function arc(a,b,col){const[x1,y1]=pt(a,88),[x2,y2]=pt(b,88);return`<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} A88 88 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${col}" stroke-width="20" fill="none"/>`}
+function gauge(k,from){const sp=OV.spirit||0;const a=-0.15-sp,b=0.15-sp,c=0.6-sp;const r=s=>(clamp(s,-1,1)*90).toFixed(1);
+ return`<svg class="gauge" viewBox="0 0 220 122" aria-label="Nice-o-meter">${arc(-1,a,'#B8283A')}${arc(a,b,'#E9B44C')}${arc(b,c,'#8FBF8A')}${arc(c,1,'#1F5C45')}
+<text x="10" y="121" font-size="10" fill="#5D6A63">naughty</text><text x="186" y="121" font-size="10" fill="#5D6A63">nice</text>
+<g class="needle" style="transform:rotate(${from===undefined?-90:r(from)}deg)" data-r="${r(k.score)}"><line x1="110" y1="110" x2="110" y2="34" stroke="#1B1F1D" stroke-width="5" stroke-linecap="round"/></g><circle cx="110" cy="110" r="10" fill="#1B1F1D"/><circle cx="110" cy="110" r="4" fill="#E9B44C"/></svg>`}
+function timeline(k){const W=600,H=130,b=68;let s=`<svg class="tl" viewBox="0 0 ${W} ${H}" aria-label="Behaviour timeline"><line x1="10" y1="${b}" x2="${W-10}" y2="${b}" stroke="#DCCFB6" stroke-width="2"/>`;
+ 'JFMAMJJASOND'.split('').forEach((m,i)=>{const x=20+i*(W-40)/11;s+=`<text x="${x}" y="${H-4}" font-size="11" text-anchor="middle" fill="#5D6A63">${m}</text>`});
+ k.obs.forEach((o,i)=>{const x=20+clamp(o.doy,0,1)*(W-40);const y=b-o.w*12;const c=o.santa?'#E9B44C':dotc(o.w);
+  s+=`<line x1="${x.toFixed(1)}" y1="${b}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${c}" stroke-width="2" opacity=".5"/>${o.santa?`<text x="${x.toFixed(1)}" y="${(y+6).toFixed(1)}" font-size="18" text-anchor="middle" style="animation:pop .4s ${(i*.07).toFixed(2)}s both">🎅</text>`:`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(5+Math.abs(o.w)*1.5).toFixed(1)}" fill="${c}" style="animation:pop .4s ${(i*.07).toFixed(2)}s both"><title>${esc(o.when)} · ${esc(o.category)} · ${esc(o.text)}</title></circle>`}`});
+ return s+`<text x="12" y="16" font-size="11" fill="#1F5C45">▲ good deeds</text><text x="12" y="${b+40}" font-size="11" fill="#B8283A">▼ slips</text></svg>`}
+
+function suggestion(k){const top=Object.entries(k.byCat).sort((a,b)=>b[1]-a[1])[0];const low=Object.entries(k.byCat).sort((a,b)=>a[1]-b[1])[0];
+ const t=top&&top[1]>0?top[0].toLowerCase():'effort';const w=k.wish?`<b>${esc(k.wish)}</b>`:'the gift';const f=k.final;
+ if(f==='nice')return`✅ Approve the wish: ${w}. Add a thank-you note for their ${t}.`;
+ if(f==='lean')return`✅ Approve ${w}, with a note praising their ${t}${k.trend==='improving'?' and how much they have grown this year':''}.`;
+ if(f==='rev')return k.reasons.includes('thin data')?`🔎 Only ${k.obs.length} clue${k.obs.length===1?'':'s'} about ${esc(k.name.split(' ')[0])}. Send an elf to ${esc(k.city||k.country)}, or add a Santa's note below.`:k.reasons.includes('elves disagree')?`🔎 The elves see two different children here. Read the entries yourself, Santa.`:`🔎 Right on the line. Hold ${w} until you've decided.`;
+ const fix=low?low[0].replace('Unkindness','kindness').replace('Dishonesty','honesty').replace('Mischief','calmer adventures').replace('Refused','sharing').toLowerCase():'better choices';
+ return`💌 A smaller version of ${w} and a kind note encouraging ${fix}. No coal. Kids change.`}
+
+function storyHTML(k){if(MODE!=='story'||!k.pieces.length)return'';
+ return`<div class="sec">The story, highlighted</div><div class="story">${k.pieces.map(p=>p.w>0?`<span class="g">${esc(p.text)}</span>`:p.w<0?`<span class="b">${esc(p.text)}</span>`:esc(p.text)).join('')}${(OV.notes[k.name]||[]).map(n=>` <span class="s">🎅 ${esc(n.text)}</span>`).join('')}</div>`}
+
+function card(k,from){const B=BANDS[k.final];const nm=esc(k.name);
+ const maxAbs=Math.max(...Object.values(k.byCat).map(Math.abs),0.01);
+ const sealInfo=k.seal?`<div style="margin-top:6px"><span class="sealed">🖋 SANTA'S SEAL</span> <span class="vc-meta">ELFRED suggested ${BANDS[k.band][0]}</span></div>`:'';
+ return`<div class="vcard"><div class="vc-top">${gauge(k,from)}<div><div class="vc-name serif">${nm} ${flag(k.country)}</div>
+ <div class="vc-meta">${esc(k.age?k.age+' yrs · ':'')}${esc(k.city?k.city+', ':'')}${esc(k.country)}</div>
+ <div style="margin-top:6px"><span class="band ${B[1]}">${B[0]}</span></div>${sealInfo}
+ ${k.reasons.length&&!k.seal?`<div style="margin-top:6px">${k.reasons.map(r=>`<span class="flag-r">⚠ ${r}</span>`).join('')}</div>`:''}</div></div>
+ ${k.wish?`<div class="wish">🎁 <span>Wishes for: <b>${esc(k.wish)}</b></span></div>`:''}
+ <div class="stats"><span class="stat">Confidence <b>${k.conf}</b></span><span class="stat"><b>${k.obs.length}</b> ${MODE==='story'?'signals in the story':'observations'}</span>${HAS_ELVES?`<span class="stat"><b>${k.elves.size}</b> elves</span>`:''}${k.notes?`<span class="stat">🎅 <b>${k.notes}</b> Santa's note${k.notes>1?'s':''}</span>`:''}<span class="stat">Trend <b>${k.trend}</b></span><span class="stat">Score <b>${k.score>0?'+':''}${k.score.toFixed(2)}</b></span></div>
+ <div class="sec">The year at a glance</div>${timeline(k)}
+ ${storyHTML(k)}
+ <div class="sec">Key evidence</div><ul class="ev">${k.key.map(o=>`<li><span class="dot" style="background:${o.santa?'#E9B44C':dotc(o.w)}"></span><span style="flex:1">${o.santa?'🎅 ':''}${esc(o.text)}</span><span class="cite">${o.santa?'Santa\'s note · '+esc(o.when):HAS_ELVES?`${fmt(o.date)} · Elf ${esc(o.elf)} · row ${o.id}`:`${esc(o.when)} · row ${o.id}`}</span></li>`).join('')||'<li>No clear good deeds or slips found.</li>'}</ul>
+ <details><summary>Why this verdict? Show the maths</summary><div class="brk" style="margin-top:8px">${Object.entries(k.byCat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<span>${esc(c)}</span><span><span class="bar" style="display:block;width:${Math.max(4,Math.abs(v)/maxAbs*100)}%;background:${v>=0?'#1F5C45':'#B8283A'}"></span></span><span style="text-align:right">${v>0?'+':''}${v.toFixed(1)}</span>`).join('')}</div>
+ <p class="vc-meta" style="margin-top:6px">${MODE==='story'?'ELFRED reads the story clause by clause, spots good deeds and slips, notices words like <i>always/once</i> and <i>never/stopped</i>, and estimates when in the year each happened. ':''}Recent months count up to 2.5× more than January. Kindness and honesty ±3, helpfulness +2, chores +1, mischief −1.${OV.spirit?` Christmas spirit dial: ${OV.spirit>0?'+':''}${OV.spirit.toFixed(2)}.`:''}</p></details>
+ <div class="suggest">${suggestion(k)}</div><div class="sign">Final call is yours, Santa. 🎅</div>
+ <div class="acts"><button class="act" data-act="note" data-kid="${nm}">✍️ Add Santa's note</button><button class="act alt" data-act="seal" data-kid="${nm}">🖋 Santa's seal</button></div>
+ <div class="drawer" data-drawer="note" hidden><b>✍️ Tell ELFRED something the elves missed</b><textarea placeholder="e.g. She baked cookies for the reindeer and shared them with the whole stable"></textarea>
+  <div class="row"><select><option value="0.93">Lately</option><option value="0.76">Autumn</option><option value="0.52">Summer</option><option value="0.3">Spring</option><option value="0.05">Early in the year</option></select><button class="act" data-act="savenote" data-kid="${nm}">Re-assess ✨</button></div>
+  <p class="vc-meta" style="margin:6px 0 0">Your note is stored next to the list, not in it. The elves' records stay untouched.</p></div>
+ <div class="drawer" data-drawer="seal" hidden><b>🖋 Stamp your final decision</b><div class="row">${Object.entries(BANDS).map(([b,v])=>`<button class="sealbtn ${v[1]}" data-act="dostamp" data-band="${b}" data-kid="${nm}">${v[0]}</button>`).join('')}${k.seal?`<button class="clear" data-act="unseal" data-kid="${nm}">Remove seal</button>`:''}</div></div></div>`}
+
+/* ================= chat ================= */
+const log=document.getElementById('log');let asked=0;
+const AV=`<div class="av"><svg viewBox="0 0 400 500"><path d="M70 410 C130 270 210 140 340 70 C315 170 312 300 345 410 Z" fill="#B8283A"/><rect x="40" y="400" width="330" height="72" rx="36" fill="#F7F0E3"/><circle cx="342" cy="66" r="44" fill="#F7F0E3"/></svg></div>`;
+function add(html,who){const d=document.createElement('div');d.className='msg '+who;
+ d.innerHTML=who==='me'?esc(html):`${AV}<div class="bub"><div class="who">Elfred</div>${html}</div>`;
+ log.appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>{d.querySelectorAll('.needle').forEach(n=>n.style.transform=`rotate(${n.dataset.r}deg)`);log.scrollTop=log.scrollHeight}));
+ if(who==='elf'&&d.querySelector('.b-nice')&&!d.querySelector('.refuse'))setTimeout(()=>sparkle(d),400);return d}
+function think(){return add('<span class="typing"><span></span><span></span><span></span></span> <span class="vc-meta">checking the list…</span>','elf')}
+function reply(html,delay){const th=think();setTimeout(()=>{th.remove();add(html,'elf')},delay??(500+Math.random()*350))}
+
+const first=n=>n.split(/\s+/)[0];
+function findKid(t){const l=t.toLowerCase();const reN=s=>new RegExp('(^|[^\\p{L}])'+s.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^\\p{L}]|$)','u');
+ const full=KIDS.filter(k=>reN(k.name).test(l));if(full.length)return full;return KIDS.filter(k=>reN(first(k.name)).test(l))}
+function findPlace(t){const l=t.toLowerCase();const al={suomi:'finland',sverige:'sweden',norge:'norway',danmark:'denmark',america:'usa',deutschland:'germany'};
+ for(const[a,c]of Object.entries(al))if(new RegExp('\\b'+a+'\\b').test(l)){const v=KIDS.find(k=>k.country.toLowerCase()===c)?.country;if(v)return{type:'country',v}}
+ const cs=[...new Set(KIDS.map(k=>k.country))].filter(Boolean).find(c=>l.includes(c.toLowerCase()));if(cs)return{type:'country',v:cs};
+ const ci=[...new Set(KIDS.map(k=>k.city))].filter(Boolean).find(c=>l.includes(c.toLowerCase()));if(ci)return{type:'city',v:ci};return null}
+const inPlace=p=>KIDS.filter(k=>p.type==='country'?k.country===p.v:k.city===p.v);
+const chipB=k=>`<span class="band ${BANDS[k.final][1]}" style="font-size:11px">${BANDS[k.final][0]}</span>${k.seal?' 🖋':''}`;
+function listHTML(arr,extra){return`<ul class="mini-list">${arr.map(k=>`<li data-kid="${esc(k.name)}"><span>${flag(k.country)}</span><span class="nm">${esc(k.name)}</span><span class="vc-meta">${esc(k.city||k.country)}</span><span style="margin-left:auto;text-align:right">${chipB(k)}${extra?extra(k):''}</span></li>`).join('')}</ul>`}
+const reasonChips=k=>' '+k.reasons.map(r=>`<span class="flag-r">${r}</span>`).join('');
+function bigbar(group){const c={nice:0,lean:0,rev:0,nudge:0};group.forEach(k=>c[k.final]++);
+ return`<div class="bigbar">${Object.entries(c).filter(([,v])=>v).map(([b,v])=>`<div style="flex:${v};background:${BANDS[b][2]};color:${b==='lean'||b==='rev'?'#1B1F1D':'#F7F0E3'}">${v}</div>`).join('')}</div><div class="legend">${Object.keys(c).map(b=>`<span style="--c:${BANDS[b][2]}">${BANDS[b][0]} · ${c[b]}</span>`).join('')}</div>`}
+function summary(group,label){const rev=group.filter(k=>k.final==='rev');
+ return`<p><b>${esc(label)}</b>: ${group.length} child${group.length>1?'ren':''}.</p>${bigbar(group)}${rev.length?`<div class="sec">Needs your eyes</div>${listHTML(rev,reasonChips)}`:'<p class="sign">No borderline cases here. Easy one, Santa!</p>'}`}
+const bandWord=l=>/clearly nice|very nice|super nice|angel/.test(l)?'nice':/leaning|mostly nice|kinda nice|nice-ish/.test(l)?'lean':/nice list|\bnice\b|good/.test(l)?'nice':/naught|nudge|coal|bad/.test(l)?'nudge':/review|unsure|undecided|maybe/.test(l)?'rev':null;
+
+function answer(t){
+ const l=t.toLowerCase();asked++;const kids=findKid(t);const place=findPlace(t);
+ // Santa's seal: "put Mikko on the nice list", "mark Lumi as naughty", "seal Iida nice"
+ if(kids.length&&/(mark|seal|stamp|put .* on|move .* to|make .* (nice|naught)|my (call|decision)|i decide|final(ly)? (verdict|decision)?|declare|is officially)/.test(l)&&bandWord(l)&&!/\b(delete|erase|remove|edit)\b/.test(l)){
+  return stampHTML(kids[0].name,bandWord(l))}
+ // Santa's note: "note for Aino: baked cookies"
+ if(/^(santa'?s )?note\b|add (a )?(santa'?s )?note|^actually\b|^fyi\b|^also\b|i (saw|heard|noticed)/.test(l)){
+  if(!kids.length)return`<p>Happy to take a note! Who is it about? Try: <i>"note for ${esc(first(KIDS[0].name))}: shared cookies with the reindeer"</i>.</p>`;
+  const k=kids[0];let txt=t.includes(':')?t.slice(t.indexOf(':')+1):t.replace(new RegExp('.*?'+first(k.name)+'(\\s+'+(k.name.split(/\s+/)[1]||'')+')?','i'),'');txt=txt.replace(/^[\s,–-]+/,'').trim();
+  return noteHTML(k.name,txt,0.93)}
+ if(/\b(delete|remove|erase|edit|change|update|modify|rewrite|overwrite|insert)\b/.test(l)){
+  const k=kids[0];return`<div class="refuse"><p><b>I can't change the elves' list, Santa.</b> 🔒 Their records stay exactly as they wrote them.</p><p>But you're the boss of the <i>verdict</i>. You can add a <b>✍️ Santa's note</b> with new information, or stamp a <b>🖋 Santa's seal</b>. Both sit beside the list, not in it.</p></div>${k?'<div style="margin-top:10px">'+card(k)+'</div>':''}`}
+ if(/(tired|exhausted|stress|overwhelm|\bsad\b|can'?t do this|so much|burn|help me|väsy|kiire|sleepy)/.test(l)){
+  const r=KIDS.filter(k=>k.final==='rev').length,good=KIDS.filter(k=>k.final==='nice'||k.final==='lean').length;
+  return`<div class="cocoa"><p>☕ <b>Deep breath, Santa.</b></p><p>Here's the real picture: <b>${good} of ${KIDS.length}</b> children are already sorted as nice. Only <b>${r}</b> need your judgement, and I've lined them up for you.</p><p>You've done this every year for a very long time, and you've never missed a chimney. Mrs. Claus just made cocoa. Ten minutes won't change the list. I promise. 😉</p></div>`}
+ if(/(review|unsure|borderline|tricky|difficult|unclear|need.*(me|my)|queue)/.test(l)){
+  const rev=(place?inPlace(place):KIDS).filter(k=>k.final==='rev');
+  return rev.length?`<p>🔎 <b>${rev.length} child${rev.length>1?'ren need':' needs'} your judgement</b>${place?' in '+esc(place.v):''}. I don't guess, so these are yours:</p>${listHTML(rev,reasonChips)}<p class="vc-meta">Tap a name for the evidence, then stamp your seal.</p>`:`<p>Nobody${place?' in '+esc(place.v):''} needs a second look. 🎉</p>`}
+ if(kids.length)return kids.slice(0,3).map(k=>card(k)).join('<hr style="border:0;border-top:2px dashed #DCCFB6;margin:14px 0">');
+ if(place)return`<p>${flag(inPlace(place)[0]?.country)} Here's how ${esc(place.v)} is doing:</p>`+summary(inPlace(place),place.v);
+ if(/(nicest|best|top|kindest|star|angel)/.test(l)){const t3=KIDS.slice(0,3);return`<p>🌟 The brightest stars on this year's list:</p>${listHTML(t3,k=>` <b>+${k.score.toFixed(2)}</b>`)}`}
+ if(/(naught|coal|worst|\bbad\b)/.test(l)){const n=KIDS.filter(k=>k.final==='nudge');return n.length?`<p>I don't label any child as "bad", but <b>${n.length}</b> ${n.length>1?'have':'has'} a pattern worth a gentle nudge:</p>${listHTML(n)}<p class="sign">My suggestion for all of them: a smaller gift and a kind note. Hope works better than coal.</p>`:'<p>Nobody needs a nudge this year. Truly a Christmas miracle.</p>'}
+ if(/(gift|wish|present|workshop|toy)/.test(l)){const ok=KIDS.filter(k=>(k.final==='nice'||k.final==='lean')&&k.wish);return`<p>🛠 <b>${ok.length}</b> wishes are approved for the workshop:</p><ul class="mini-list">${ok.map(k=>`<li data-kid="${esc(k.name)}">🎁 <span><span class="nm">${esc(first(k.name))}</span>: ${esc(k.wish)}</span></li>`).join('')}</ul>`}
+ if(/(improv|redemption|grow|turned|changed|better)/.test(l)){const g=KIDS.filter(k=>k.trend==='improving');return g.length?`<p>📈 These children turned their year around. Recent months count more, so they get the credit:</p>${listHTML(g)}`:'<p>No big turnarounds this year.</p>'}
+ if(/(summary|overview|world|everyone|\ball\b|status|how.*(going|doing)|stats|numbers)/.test(l))return'<p>🌍 The whole world, at a glance:</p>'+summary(KIDS,'Everyone');
+ if(/(who are you|what can you|help|how do you|what do you)/.test(l))return`<p>I'm <b>ELFRED</b>, your new Head Elf. I read the list, <b>never change it</b>, and help you decide. Try:</p><ul><li>"Is ${esc(first(KIDS[0].name))} nice?" for a verdict with evidence</li><li>"Who needs my review?"</li><li>"How is ${esc(KIDS[0].country)} doing?"</li><li>"Which wishes are approved?"</li><li>"Note for ${esc(first(KIDS[1].name))}: helped the elves wrap presents"</li><li>"Put ${esc(first(KIDS[2].name))} on the nice list" (your seal)</li></ul>`;
+ if(/^(hi|hello|hey|moi|hei|terve|ho ho)/.test(l))return'<p>'+pick(['Hello Santa! The list is open and nothing\'s on fire. Yet. 🎄','Good to see you, Santa. ELFRED reporting for duty. Read-only, as promised.'])+'</p>';
+ return`<p>Hmm, I couldn't find that on the list. 🤔 I only know what the elves wrote down, and I won't make things up.</p><p>Try a child's name (${KIDS.slice(0,3).map(k=>esc(first(k.name))).join(', ')}…), a country, or "who needs my review?"</p>`}
+
+/* ----- override actions ----- */
+function noteHTML(name,text,doy){
+ if(!text)return`<p>What should I note about ${esc(first(name))}? Write it after a colon, like <i>"note for ${esc(first(name))}: shared cookies with the reindeer"</i>.</p>`;
+ const s=scoreClause(text);
+ if(!s)return`<p>🤔 I read "<i>${esc(text)}</i>" but couldn't spot a good deed or a slip in it. Try words like <i>helped, shared, apologised, teased, lied</i>.</p>`;
+ const before=K(name);(OV.notes[name]=OV.notes[name]||[]).push({text,doy,ts:Date.now()});saveOV();recompute();const after=K(name);
+ const moved=before.final!==after.final;const d=after.score-before.score;
+ return`<p>✍️ <b>Noted, Santa.</b> I read that as <b>${esc(s.cat)}</b> (<span class="delta" style="color:${s.w>0?'#1F5C45':'#B8283A'}">${s.w>0?'+':''}${s.w.toFixed(1)}</span>). Score ${before.score.toFixed(2)} → <b>${after.score.toFixed(2)}</b>.</p>
+ ${moved?`<p>🎉 That changes things: <span class="band ${BANDS[before.final][1]}">${BANDS[before.final][0]}</span> → <span class="band ${BANDS[after.final][1]}">${BANDS[after.final][0]}</span></p>`:`<p class="vc-meta">Still <b>${BANDS[after.final][0]}</b>${Math.abs(d)<0.01?'':' but the needle moved'}.</p>`}
+ <p class="vc-meta">🔒 The elves' list is untouched. Your note lives beside it.</p><div style="margin-top:8px">${card(after,before.score)}</div>`}
+function stampHTML(name,band){const k=K(name);OV.seals[name]=band;saveOV();recompute();const a=K(name);const B=BANDS[band];
+ return`<p>🖋 <b>Sealed.</b></p><div style="text-align:center"><span class="stamp" style="color:${B[2]==='#8FBF8A'?'#3E7A3A':B[2]==='#E9B44C'?'#9A6B12':B[2]}">${B[0].toUpperCase()}</span><br><span class="vc-meta">${esc(name)} · by order of S. Claus</span></div>
+ ${a.band!==band?`<p>ELFRED respectfully notes that the evidence pointed to <b>${BANDS[a.band][0]}</b>. But that's exactly how it should work: <b>you</b> decide. 🎅</p>`:`<p>Same as my recommendation. Great minds think alike. 🤝</p>`}
+ <p class="vc-meta">Stored as Santa's decision, next to the list. The elves' records are unchanged.</p><div style="margin-top:8px">${card(a)}</div>`}
+
+function ask(t){if(!t.trim())return;add(t,'me');const th=think();
+ setTimeout(()=>{th.remove();let h=answer(t);
+  if(asked>0&&asked%8===0)h+=`<p class="cocoa" style="margin-top:10px">☕ That's ${asked} questions in a row, Santa. Stretch, sip some cocoa. I'll keep the list warm.</p>`;
+  add(h,'elf')},500+Math.random()*350)}
+function sparkle(m){const g=m.querySelector('.gauge');if(!g)return;const r=g.getBoundingClientRect();for(let i=0;i<14;i++){const s=document.createElement('span');s.className='spark';s.textContent=pick(['✨','⭐','🎄','❄️']);
+ s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';const a=Math.random()*Math.PI*2,d=60+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1200)}}
+
+/* one click handler for everything clickable */
+document.addEventListener('click',e=>{
+ const a=e.target.closest('[data-act]');
+ if(a){const name=a.dataset.kid;const bub=a.closest('.bub')||document;
+  if(a.dataset.act==='note'||a.dataset.act==='seal'){const box=a.closest('.acts').parentElement;box.querySelectorAll(':scope > .drawer').forEach(d=>d.hidden=d.dataset.drawer!==a.dataset.act||!d.hidden);const dr=box.querySelector(`:scope > .drawer[data-drawer="${a.dataset.act}"]`);if(!dr.hidden)dr.querySelector('textarea')?.focus();return}
+  if(a.dataset.act==='savenote'){const dr=a.closest('.drawer');const txt=dr.querySelector('textarea').value.trim();if(!txt)return;const doy=+dr.querySelector('select').value;dr.hidden=true;add('✍️ Note for '+first(name)+': '+txt,'me');reply(noteHTML(name,txt,doy));return}
+  if(a.dataset.act==='dostamp'){a.closest('.drawer').hidden=true;add('🖋 Seal '+first(name)+' as '+BANDS[a.dataset.band][0],'me');reply(stampHTML(name,a.dataset.band),350);return}
+  if(a.dataset.act==='unseal'){delete OV.seals[name];saveOV();recompute();a.closest('.drawer').hidden=true;add('Remove my seal on '+first(name),'me');reply(`<p>Seal removed. ${esc(first(name))} is back to ELFRED's recommendation.</p>`+card(K(name)));return}
+  if(a.dataset.act==='clearov'){if(!confirmClear())return;OV={notes:{},seals:{},spirit:0};saveOV();recompute();toast('🧹 All of Santa\'s notes and seals cleared');return}
+  return}
+ const li=e.target.closest('[data-kid]');if(li&&!e.target.closest('.drawer')){goChat();ask('Tell me about '+li.dataset.kid)}});
+function confirmClear(){const b=document.getElementById('clearBtn');if(b.dataset.armed){return true}b.dataset.armed=1;b.textContent='Tap again to clear';setTimeout(()=>{if(b){delete b.dataset.armed;b.textContent='🧹 Clear overrides'}},3000);return false}
+
+/* ================= dashboard & kids ================= */
+const FACES=[[-0.25,'😠','Grumpy Santa'],[-0.12,'🧐','Strict'],[-0.03,'🙂','Fair'],[0.03,'😊','Fair'],[0.12,'😄','Generous'],[0.26,'🤶','Jolly Santa']];
+function face(v){return FACES.find(f=>v<=f[0])||FACES[FACES.length-1]}
+function renderDash(){const days=Math.ceil((new Date(YEAR,11,24)-new Date())/864e5);const D=document.getElementById('dash');
+ const countries=[...new Set(KIDS.map(k=>k.country))].sort();const f=face(OV.spirit||0);
+ const best=MODE==='story'?KIDS.filter(k=>k.final==='nice').slice(0,4):[];
+ const recent=[...RAW].filter(r=>r.w>=2.5).sort((a,b)=>b.doy-a.doy).slice(0,4);
+ D.innerHTML=`
+ <div class="kpis"><div class="kpi"><div class="v">${KIDS.length}</div><div class="l">children on the list</div></div><div class="kpi"><div class="v">${RAW.length}</div><div class="l">${MODE==='story'?'deeds & slips found':'elf observations'}</div></div><div class="kpi"><div class="v">${countries.length}</div><div class="l">countries</div></div><div class="kpi xmas"><div class="v">${days>=0?days:'🎄'}</div><div class="l">days to Christmas Eve</div></div></div>
+ <div class="card"><h3>The Nice-o-Meter, worldwide</h3>${bigbar(KIDS)}</div>
+ <div class="card"><h3>🎅 Santa's controls</h3>
+  <div class="spirit"><span class="face" id="face">${f[1]}</span><div style="flex:1"><b id="spiritLbl">Christmas spirit: ${f[2]}</b><input type="range" id="spirit" min="-25" max="25" value="${Math.round((OV.spirit||0)*100)}" aria-label="Christmas spirit"><div class="vc-meta">Grumpy ⟵ shifts every verdict ⟶ Jolly</div></div></div>
+  <div class="ovl" style="margin-top:12px"><span class="vc-meta">✍️ ${Object.values(OV.notes).reduce((s,a)=>s+a.length,0)} notes · 🖋 ${Object.keys(OV.seals).length} seals. All stored beside the list, never in it.</span>${ovCount()||OV.spirit?'<button class="clear" id="clearBtn" data-act="clearov">🧹 Clear overrides</button>':''}</div></div>
+ <div class="card"><h3>🔎 Santa's review queue</h3>${KIDS.some(k=>k.final==='rev')?listHTML(KIDS.filter(k=>k.final==='rev'),reasonChips):'<p>Empty. Go have a cookie. 🍪</p>'}<p class="vc-meta">ELFRED won't guess when the evidence is thin or unclear. These go to you: open one and stamp your seal.</p></div>
+ <div class="card"><h3>🛠 Workshop queue: approved wishes</h3><ul class="mini-list">${KIDS.filter(k=>(k.final==='nice'||k.final==='lean')&&k.wish).map(k=>`<li data-kid="${esc(k.name)}">🎁 <span style="flex:1"><span class="nm">${esc(k.name)}</span><br><span class="vc-meta">${esc(k.wish)}</span></span>${chipB(k)}</li>`).join('')||'<li>No approved wishes yet.</li>'}</ul></div>
+ <div class="card"><h3>By country</h3>${countries.map(co=>{const g=KIDS.filter(k=>k.country===co);return`<div class="crow"><span>${flag(co)} ${esc(co||'Unknown')}</span><span class="sb">${['nice','lean','rev','nudge'].map(b=>{const n=g.filter(k=>k.final===b).length;return n?`<span style="flex:${n};background:${BANDS[b][2]}"></span>`:''}).join('')}</span><span class="vc-meta">${g.length}</span></div>`}).join('')}</div>
+ <div class="card"><h3>💚 Kindest moments</h3><ul class="ev">${recent.map(o=>`<li data-kid="${esc(o.child)}" style="cursor:pointer"><span class="dot" style="background:#1F5C45"></span><span style="flex:1"><b>${esc(first(o.child))}</b>: ${esc(o.text)}</span><span class="cite">${esc(o.when)}</span></li>`).join('')}</ul></div>
+ <p class="note">🔒 ELFRED only reads the list. Source: <b>${esc(SOURCE)}</b>. Load your own with <i>Load list CSV</i>: one row per child with a behaviour story works, and so does one row per observation. The file never leaves your browser. <a href="data/demo-list.csv" download>Download the demo list</a>.</p>`;
+ const sl=document.getElementById('spirit');sl.oninput=()=>{OV.spirit=sl.value/100;const f=face(OV.spirit);document.getElementById('face').textContent=f[1];document.getElementById('spiritLbl').textContent='Christmas spirit: '+f[2]};
+ sl.onchange=()=>{const before=KIDS.map(k=>k.final).join();saveOV();recompute();const moved=KIDS.filter((k,i)=>true);toast(face(OV.spirit)[1]+' Christmas spirit set to '+face(OV.spirit)[2]+'. Verdicts updated.')}}
+function renderKids(){const q=(document.getElementById('search').value||'').toLowerCase();
+ document.getElementById('kids').innerHTML=KIDS.filter(k=>(k.name+' '+k.city+' '+k.country+' '+k.wish).toLowerCase().includes(q)).map(k=>`<button class="kid" data-kid="${esc(k.name)}"><div class="n">${esc(k.name)} ${flag(k.country)}</div><div class="m">${esc(k.age?k.age+' yrs · ':'')}${esc(k.city||k.country)}${k.wish?'<br>🎁 '+esc(k.wish):''}</div>${chipB(k)}${k.notes?' ✍️':''}<div class="meter" style="background:linear-gradient(90deg,var(--red) 0 ${((0.85-(OV.spirit||0))*50).toFixed(1)}%,var(--gold) 0 ${((1.15-(OV.spirit||0))*50).toFixed(1)}%,var(--leaf) 0 ${((1.6-(OV.spirit||0))*50).toFixed(1)}%,var(--deep) 0)"><i style="left:${((clamp(k.score,-1,1)+1)/2*100).toFixed(1)}%"></i></div></button>`).join('')}
+document.getElementById('search').oninput=renderKids;
+function renderChips(){if(!KIDS.length)return;const a=KIDS.find(k=>k.final==='lean')||KIDS[0],b=KIDS.find(k=>k.final==='rev')||KIDS[1]||a,n=KIDS.find(k=>k.final==='nudge')||KIDS[KIDS.length-1];
+ const CH=[`Is ${first(a.name)} nice?`,'Who needs my review?',`How is ${KIDS[0].country||'everyone'} doing?`,'Which wishes are approved?',`Delete ${first(n.name)}'s worst entry`,`Note for ${first(b.name)}: helped the elves wrap presents`,`Put ${first(n.name)} on the nice list`,'Who turned their year around?',"I'm exhausted, ELFRED"];
+ document.getElementById('chips').innerHTML=CH.map(c=>`<button class="chip">${esc(c)}</button>`).join('');document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>ask(c.textContent))}
+
+/* ================= tabs, file load, boot ================= */
+const wide=()=>matchMedia('(min-width:1100px)').matches;
+function show(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===t+'Panel'))}
+function goChat(){if(!wide())show('chat')}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>show(b.dataset.t));
+document.getElementById('loadBtn').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{load(r.result,f.name);goChat();
+ const c={nice:0,lean:0,rev:0,nudge:0};KIDS.forEach(k=>c[k.final]++);
+ add(`<p>📄 <b>${esc(f.name)}</b> loaded: <b>${KIDS.length}</b> children${MODE==='story'?`, and I found <b>${RAW.length}</b> good deeds and slips in their stories`:`, ${RAW.length} observations`}.</p>${bigbar(KIDS)}<p>I've only <i>read</i> it. Nothing was changed, and the file stays in your browser. Ask me about anyone!</p>`,'elf')}catch(err){toast('⚠ '+err.message)}};r.readAsText(f);e.target.value=''};
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3500)}
+document.getElementById('f').onsubmit=e=>{e.preventDefault();const q=document.getElementById('q');ask(q.value);q.value=''};
+(()=>{const s=document.getElementById('snow');for(let i=0;i<26;i++){const f=document.createElement('i');const z=2+Math.random()*3;f.style.width=f.style.height=z+'px';f.style.left=Math.random()*100+'%';f.style.animationDuration=(4+Math.random()*6)+'s';f.style.animationDelay=(-Math.random()*8)+'s';s.appendChild(f)}})();
+load(DEMO_CSV,'Demo list');
+show(wide()?'dash':'chat');
+add(`<p><b>Ho ho ho… hello, Santa!</b> I'm ELFRED, your new AI Head Elf. 🎄</p><p>I've read the stories of all <b>${KIDS.length}</b> children on the demo list. I weigh the evidence, show you the receipts, and flag anything I'm unsure about. I <b>never</b> change the list.</p><p>You're still the boss: add <b>✍️ Santa's notes</b>, stamp a <b>🖋 Santa's seal</b>, or turn the <b>Christmas spirit</b> dial on the board. Load your own list with <b>📄 Load list CSV</b>.</p>`,'elf');
+
 </script>
 </body></html>
